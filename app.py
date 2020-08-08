@@ -50,16 +50,24 @@ if choice == "Home":
         st.text("")
         st.text("")
         categorical = cat_num(df)
-        categorical_feature = st.selectbox("Select Categorical Feature", categorical)
-        percent_pie = prcntage_values( categorical_feature, df)
-        st.write(percent_pie)
-        st.pyplot()
-        st.subheader("Two features categorical values combined comparator")
-        categorical1 = st.selectbox("Select First Categorical Feature", categorical)
-        categorical2 = st.selectbox("Select Second Categorical Feature", categorical)
-        cat_lis = [categorical1, categorical2]
-        comp_plot = different_cat_comparator(cat_lis, df)
-        st.write(comp_plot)
-        st.pyplot()
+        new_cat = ["Choose The Feature"]
+        new_cat.extend(categorical)
+        if st.checkbox("Show value count of a Categorical feature"):
+            categorical_feature = st.selectbox("Select Categorical Feature", new_cat)
+            if categorical_feature != "Choose The Feature":
+                percent_pie = prcntage_values( categorical_feature, df)
+                st.write(percent_pie)
+                st.pyplot()
+            
+        if st.checkbox("Show compaerison b/w two categorical features"):
+            st.subheader("Two features categorical values combined comparator")
+
+            categorical1 = st.selectbox("Select First Categorical Feature", new_cat)
+            categorical2 = st.selectbox("Select Second Categorical Feature", new_cat)
+            if categorical1 != "Choose The Feature" and categorical2 != "Choose The Feature":
+                cat_lis = [categorical1, categorical2]
+                comp_plot = different_cat_comparator(cat_lis, df)
+                st.write(comp_plot)
+                st.pyplot()
 
        
