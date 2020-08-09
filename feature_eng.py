@@ -99,23 +99,64 @@ def prcntage_values( categorical_feature, df):
     feature_df = pd.DataFrame( dict((  df[categorical_feature].value_counts() )).items() , columns = ['Category' , '%age'] )
     return px.pie( feature_df , values='%age', names='Category', title='Category vs %age for ' + categorical_feature + ' ' ,color_discrete_sequence=px.colors.sequential.RdBu)
 
-def pie_plotter( lis ):
-    amazing = pd.DataFrame( lis , columns = ['Combined_Category_Type' , '%age'])
-#     amazing.iplot(kind = 'bar' , x = 'Combined_Category_Type' , y = '%age' , title = 'Category vs percentage plot' , xTitle = 'Category' , yTitle = '%age')
+# def pie_plotter( lis ):
+#     amazing = pd.DataFrame( lis , columns = ['Combined_Category_Type' , '%age'])
+# #     amazing.iplot(kind = 'bar' , x = 'Combined_Category_Type' , y = '%age' , title = 'Category vs percentage plot' , xTitle = 'Category' , yTitle = '%age')
 
-    return px.pie( amazing , values='%age', names='Combined_Category_Type', title='Category vs %age' ,color_discrete_sequence=px.colors.sequential.RdBu)
+#     return px.pie( amazing , values='%age', names='Combined_Category_Type', title='Category vs %age' ,color_discrete_sequence=px.colors.sequential.RdBu)
 
-def different_cat_comparator( lis_of_feat, df): # here function accepts lis size == 2 only 
+# def different_cat_comparator( lis_of_feat, df): # here function accepts lis size == 2 only 
+#     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
+#     lis = []
+#     for cat_1 in df[type_1].value_counts().index: 
+#         sub_lis = []
+#         for cat_2 in df[type_2].value_counts().index:
+
+#             new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
+#             sub_lis.append( [ str(cat_1) + ' and ' + str(cat_2) ,   len(new)  ] )
+#         lis.append(sub_lis)
+#     for val in lis :
+#         p = pie_plotter(val)
+#         return(p)
+    
+
+# ---------------------------------------------------------------------------
+# def pie_plotter( lis ):
+#     amazing = pd.DataFrame( lis , columns = ['Combined_Category_Type' , '%age'])
+#     return px.pie( amazing , values='%age', names='Combined_Category_Type', title='Category vs %age' ,color_discrete_sequence=px.colors.sequential.RdBu)
+
+# def different_cat_comparator( lis_of_feat, df): # here function accepts lis size == 2 only 
+#     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
+#     lis = []
+#     for cat_1 in df[type_1].value_counts().index: 
+#         sub_lis = []
+#         for cat_2 in df[type_2].value_counts().index:
+
+#             new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
+#             sub_lis.append( [ str(cat_1) + ' and ' + str(cat_2) ,   len(new)  ] )
+#         lis.append(sub_lis)
+        
+#     return [ pie_plotter(val)  for val in lis]
+# ---------------------------------------------------------------------------
+
+
+def two_cat_comparator( lis_of_feat , df ):
     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
-    lis = []
+    dic = {}
     for cat_1 in df[type_1].value_counts().index: 
         sub_lis = []
         for cat_2 in df[type_2].value_counts().index:
 
             new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
-            sub_lis.append( [ str(cat_1) + ' and ' + str(cat_2) ,   len(new)  ] )
-        lis.append(sub_lis)
-    for val in lis :
-        p = pie_plotter(val)
-        return(p)
+            sub_lis.append( [ cat_2 ,   len(new)  ] )
+        dic[cat_1] = sub_lis
+   
+ 
+    wow = []
+
+    for key in dic:
+        wow.append(  go.Bar(name = key  , x = np.array(dic[key])[: , 0]  , y = np.array(dic[key])[: , 1] )  )
+    fig = go.Figure(data = wow)
+    fig.update_layout(barmode='group')
     
+    return fig
