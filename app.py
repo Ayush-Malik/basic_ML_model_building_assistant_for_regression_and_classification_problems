@@ -2,6 +2,7 @@ from streamlit import *
 import pandas as pd 
 import numpy as np 
 from feature_eng import *
+from models import *
 
 
 activities = ["Home", "EDA", "Model Building", "About Us"]	
@@ -75,8 +76,7 @@ if choice == "Home": # For Navigating to Home Page
             categorical_feature = selectbox("Select Categorical Feature", new_cat)
             if categorical_feature != "Choose The Feature":
                 percent_pie = prcntage_values( categorical_feature, df)
-                write(percent_pie)
-                pyplot()
+                plotly_chart(percent_pie)
             
         if checkbox("Show compaerison b/w two categorical features"):
             subheader("Two features categorical values combined comparator")
@@ -86,25 +86,29 @@ if choice == "Home": # For Navigating to Home Page
             if categorical1!= "Choose The Feature" and categorical2 != "Choose The Feature":
                 cat_lis          = [categorical1, categorical2] 
                 comparison_plot = two_cat_comparator( cat_lis , df )
-                write(comparison_plot)
-                pyplot()
+                plotly_chart(comparison_plot)
 
-        subheader("Select the features to be droped")
-        text("")
+        subheader("Select the feature to be dropped")
         missing_lis = missing_value_lis(df)
         lis_drop = multiselect("Select Feature", missing_lis) 
-        feature_tracker = drop_feat(df, lis_drop)
+        feature_tracker, sent = drop_feat(df, lis_drop)
+        write(sent)
         
         subheader("Select Features to be filled")
         lis_fill = []
         feature_ch = []
+        count = 0
         for feature in feature_tracker:
             if checkbox(feature):
-                strategy = selectbox("Choose strategy", ["mean", "median", "mode"])
-                lis_fill.append(strategy)
-                feature_ch.append(feature)
+                strategy = selectbox("Choose strategy", ["strategy","mean", "median", "mode"], key = count)
+                if strategy != "strategy":
+                    lis_fill.append(strategy)
+                    feature_ch.append(feature)
+                    write("Feature filled Successfully")
+                count += 1
         fill_feature(df, feature_ch , lis_fill)
-    
+
+        Models([np.array([2,3,45,67,84,56,233,34,66]).reshape(-1, 1), np.array([5,4,25,47,44]).reshape(-1, 1)], [[2,3,45,67,84,56,233,34,66], [5,4,25,47,44]], ["LinearRegression", "RandomForestRegressor", "AdaBoostRegressor"]).model_call()
 
 
 
