@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
 
 
+# Regressors
 def linear_regression(X_train, X_test, y_train, y_test):
     regressor = LinearRegression()
     regressor.fit(X_train, y_train)
@@ -63,6 +64,63 @@ def xgb_regressor(X_train, X_test, y_train, y_test):
     return y_pred
 
 
+# Classifier
+def logistic_regression(X_train, X_test, y_train, y_test):
+    regressor = LogisticRegression()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def random_forest_classifier(X_train, X_test, y_train, y_test):
+    regressor = RandomForestClassifier()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def ada_boost_classifier(X_train, X_test, y_train, y_test):
+    regressor = AdaBoostClassifier()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def svc(X_train, X_test, y_train, y_test):
+    regressor = SVC()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def mlp_classifier(X_train, X_test, y_train, y_test):
+    regressor = MLPClassifier()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def decision_tree_classifier(X_train, X_test, y_train, y_test):
+    regressor = DecisionTreeClassifier()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
+def xgb_classifier(X_train, X_test, y_train, y_test):
+    regressor = XGBClassifier()
+    regressor.fit(X_train, y_train)
+    y_pred = regressor.predict(X_test)
+    print('R2 score--> ', regressor.score(X_test, y_test))
+    return y_pred
+
+
 class Models:
     def __init__(self, X_list, y_list, model_list = None):
         '''
@@ -109,52 +167,101 @@ class Models:
                         )
                     self.dict['LinearRegression'] = pred_output
                 
-                if self.model_list[model_list_index] == 'RandomForestRegressor':
+                elif self.model_list[model_list_index] == 'RandomForestRegressor':
                     pred_output = random_forest_regressor(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['RandomForestRegressor'] = pred_output
                 
-                if self.model_list[model_list_index] == 'AdaBoostRegressor':
+                elif self.model_list[model_list_index] == 'AdaBoostRegressor':
                     pred_output = ada_boost_regressor(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['AdaBoostRegressor'] = pred_output
                 
-                if self.model_list[model_list_index] == 'SVR':
+                elif self.model_list[model_list_index] == 'SVR':
                     pred_output = svr(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['SVR'] = pred_output
                 
-                if self.model_list[model_list_index] == 'MLPRegressor':
+                elif self.model_list[model_list_index] == 'MLPRegressor':
                     pred_output = mlp_regressor(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['MLPRegressor'] = pred_output
                 
-                if self.model_list[model_list_index] == 'DecisionTreeRegressor':
+                elif self.model_list[model_list_index] == 'DecisionTreeRegressor':
                     pred_output = decision_tree_regressor(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['DecisionTreeRegressor'] = pred_output
                 
-                if self.model_list[model_list_index] == 'XGBRegressor':
+                elif self.model_list[model_list_index] == 'XGBRegressor':
                     pred_output = xgb_regressor(
                         self.X_train, self.X_test,
                         self.y_train, self.y_test
                     )
                     self.dict['XGBRegressor'] = pred_output
+                
+                # For Classification problem
+                elif self.model_list[model_list_index] == 'LogisticRegression':
+                    pred_output = logistic_regression(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['LogisticRegression'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'RandomForestClassifier':
+                    pred_output = random_forest_classifier(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['RandomForestClassifier'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'AdaBoostClassifier':
+                    pred_output = ada_boost_classifier(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['AdaBoostClassifier'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'SVC':
+                    pred_output = svc(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['SVC'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'MLPClassifier':
+                    pred_output = mlp_classifier(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['MLPClassifier'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'DecisionTreeClassifier':
+                    pred_output = decision_tree_classifier(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['DecisionTreeClassifier'] = pred_output
+                
+                elif self.model_list[model_list_index] == 'XGBClassifier':
+                    pred_output = xgb_classifier(
+                        self.X_train, self.X_test,
+                        self.y_train, self.y_test
+                    )
+                    self.dict['XGBClassifier'] = pred_output
 
 
-print(Models("x", "y", ["LinearRegression"]).model_call())
+# print(Models("x", "y", ["LinearRegression"]).model_call())
 
 
 # function for finding different scores ---- remaining
-# classification models function ---- remaining
 # function for self.dict so that it should return y_pred according the the value passed by the user ---- remaining
