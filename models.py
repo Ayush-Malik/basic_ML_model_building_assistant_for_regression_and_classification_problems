@@ -141,6 +141,7 @@ class Models:
         self.model_list = model_list
         self.dict = dict()
 
+
     def model_call(self):
         '''
         model_call makes different function calls according to the Attributes received through model_list.
@@ -258,6 +259,11 @@ class Models:
                         self.y_train, self.y_test
                     )
                     self.dict['XGBClassifier'] = pred_output
+
+
+    def output(self, value):
+        # Return the y_pred according to the value provided.
+        return self.dict[value]
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
