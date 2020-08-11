@@ -137,7 +137,7 @@ def drop_feat(df, lis_drop):
     for feat in drop_features:
         feature_tracker.remove(feat)
 
-    return(feature_tracker)
+    return(feature_tracker, "Features Were Dropped Successfully")
 
 
 def fill_feature(df, feature_ch, liss_fill):

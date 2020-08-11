@@ -5,6 +5,7 @@ from sklearn.svm import SVC, SVR
 from sklearn.neural_network import MLPClassifier, MLPRegressor, multilayer_perceptron
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
+from streamlit import *
 
 
 # Regressors
@@ -12,7 +13,7 @@ def linear_regression(X_train, X_test, y_train, y_test):
     regressor = LinearRegression()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    write('R2 score--> ', regressor.score(X_test, y_test))
     return y_pred
 
 
@@ -20,7 +21,7 @@ def random_forest_regressor(X_train, X_test, y_train, y_test):
     regressor = RandomForestRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    write('R2 score--> ', regressor.score(X_test, y_test))
     return y_pred
 
 
@@ -28,7 +29,7 @@ def ada_boost_regressor(X_train, X_test, y_train, y_test):
     regressor = AdaBoostRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    write('R2 score--> ', regressor.score(X_test, y_test))
     return y_pred
 
 
