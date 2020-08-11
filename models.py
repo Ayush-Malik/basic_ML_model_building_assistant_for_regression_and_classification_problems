@@ -5,6 +5,7 @@ from sklearn.svm import SVC, SVR
 from sklearn.neural_network import MLPClassifier, MLPRegressor, multilayer_perceptron
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
+from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, r2_score, mean_squared_error, mean_squared_log_error
 from streamlit import *
 
 
@@ -13,7 +14,8 @@ def linear_regression(X_train, X_test, y_train, y_test):
     regressor = LinearRegression()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    write('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Linear Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -21,7 +23,8 @@ def random_forest_regressor(X_train, X_test, y_train, y_test):
     regressor = RandomForestRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    write('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Random Forest Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -29,7 +32,8 @@ def ada_boost_regressor(X_train, X_test, y_train, y_test):
     regressor = AdaBoostRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    write('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Ada Boost Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -37,7 +41,8 @@ def svr(X_train, X_test, y_train, y_test):
     regressor = SVR()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("SVR:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -45,7 +50,8 @@ def mlp_regressor(X_train, X_test, y_train, y_test):
     regressor = MLPRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("MLP Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -53,7 +59,8 @@ def decision_tree_regressor(X_train, X_test, y_train, y_test):
     regressor = DecisionTreeRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Decision Tree Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -61,7 +68,8 @@ def xgb_regressor(X_train, X_test, y_train, y_test):
     regressor = XGBRegressor()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("XGB Regression:-")
+    acc_measure_reg(y_test, y_pred)
     return y_pred
 
 
@@ -70,7 +78,8 @@ def logistic_regression(X_train, X_test, y_train, y_test):
     regressor = LogisticRegression()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Logistic Regression:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -78,7 +87,8 @@ def random_forest_classifier(X_train, X_test, y_train, y_test):
     regressor = RandomForestClassifier()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Random Forest Classifier:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -86,7 +96,8 @@ def ada_boost_classifier(X_train, X_test, y_train, y_test):
     regressor = AdaBoostClassifier()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Ada Boost Classifier:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -94,7 +105,8 @@ def svc(X_train, X_test, y_train, y_test):
     regressor = SVC()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("SVC:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -102,7 +114,8 @@ def mlp_classifier(X_train, X_test, y_train, y_test):
     regressor = MLPClassifier()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("MLP Classifier:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -110,7 +123,8 @@ def decision_tree_classifier(X_train, X_test, y_train, y_test):
     regressor = DecisionTreeClassifier()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("Decision Tree Classifier:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -118,7 +132,8 @@ def xgb_classifier(X_train, X_test, y_train, y_test):
     regressor = XGBClassifier()
     regressor.fit(X_train, y_train)
     y_pred = regressor.predict(X_test)
-    print('R2 score--> ', regressor.score(X_test, y_test))
+    subheader("XGB Classifier:-")
+    acc_measure_cls(y_test, y_pred)
     return y_pred
 
 
@@ -158,7 +173,10 @@ class Models:
         else:
             # For calling respective functions according to the model_list
             model_list_len = len(self.model_list)
-            print("Working on it! please wait for a while")
+            text("")
+            subheader("Working On It! Please Wait For a While")
+            text("")
+            text("")
             
             for model_list_index in range(model_list_len):
                 # For Regression problems
@@ -265,6 +283,23 @@ class Models:
     def output(self, value):
         # Return the y_pred according to the value provided.
         return self.dict[value]
+
+
+def acc_measure_cls(y_test, y_pred):
+    acc = accuracy_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    roc_auc = roc_auc_score(y_test, y_pred)
+    write("Accuracy Score:- ", acc)
+    write("F1 Score:- ", f1)
+    write("ROC AUC Score:- ", roc_auc)
+
+def acc_measure_reg(y_test, y_pred):
+    r2 = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    msle = mean_squared_log_error(y_test, y_pred)
+    write("R2 Score:- ", r2)
+    write("Mean Squared Error:- ", mse)
+    write("Mean Squared Log Error:- ", msle)
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
