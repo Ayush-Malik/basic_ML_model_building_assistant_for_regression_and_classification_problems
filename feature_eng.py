@@ -99,46 +99,6 @@ def prcntage_values( categorical_feature, df):
     feature_df = pd.DataFrame( dict((  df[categorical_feature].value_counts() )).items() , columns = ['Category' , '%age'] )
     return px.pie( feature_df , values='%age', names='Category', title='Category vs %age for ' + categorical_feature + ' ' ,color_discrete_sequence=px.colors.sequential.RdBu)
 
-# def pie_plotter( lis ):
-#     amazing = pd.DataFrame( lis , columns = ['Combined_Category_Type' , '%age'])
-# #     amazing.iplot(kind = 'bar' , x = 'Combined_Category_Type' , y = '%age' , title = 'Category vs percentage plot' , xTitle = 'Category' , yTitle = '%age')
-
-#     return px.pie( amazing , values='%age', names='Combined_Category_Type', title='Category vs %age' ,color_discrete_sequence=px.colors.sequential.RdBu)
-
-# def different_cat_comparator( lis_of_feat, df): # here function accepts lis size == 2 only 
-#     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
-#     lis = []
-#     for cat_1 in df[type_1].value_counts().index: 
-#         sub_lis = []
-#         for cat_2 in df[type_2].value_counts().index:
-
-#             new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
-#             sub_lis.append( [ str(cat_1) + ' and ' + str(cat_2) ,   len(new)  ] )
-#         lis.append(sub_lis)
-#     for val in lis :
-#         p = pie_plotter(val)
-#         return(p)
-    
-
-# ---------------------------------------------------------------------------
-# def pie_plotter( lis ):
-#     amazing = pd.DataFrame( lis , columns = ['Combined_Category_Type' , '%age'])
-#     return px.pie( amazing , values='%age', names='Combined_Category_Type', title='Category vs %age' ,color_discrete_sequence=px.colors.sequential.RdBu)
-
-# def different_cat_comparator( lis_of_feat, df): # here function accepts lis size == 2 only 
-#     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
-#     lis = []
-#     for cat_1 in df[type_1].value_counts().index: 
-#         sub_lis = []
-#         for cat_2 in df[type_2].value_counts().index:
-
-#             new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
-#             sub_lis.append( [ str(cat_1) + ' and ' + str(cat_2) ,   len(new)  ] )
-#         lis.append(sub_lis)
-        
-#     return [ pie_plotter(val)  for val in lis]
-# ---------------------------------------------------------------------------
-
 
 def two_cat_comparator( lis_of_feat , df ):
     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
@@ -160,3 +120,34 @@ def two_cat_comparator( lis_of_feat , df ):
     fig.update_layout(barmode='group')
     
     return fig
+
+def missing_value_lis(df):
+    missing_values_count = null_value(df)
+    return (list(missing_values_count['Column/Feature']))
+
+
+def drop_feat(df, lis_drop):
+    # Time to drop or fill the Nan values in given features
+    missing_values_count = null_value(df)
+    feature_tracker = list(missing_values_count['Column/Feature'])
+
+    drop_features = lis_drop
+    df.drop( drop_features , axis = 1 , inplace = True)
+
+    for feat in drop_features:
+        feature_tracker.remove(feat)
+
+    return(feature_tracker)
+
+
+def fill_feature(df, feature_ch, liss_fill):
+        
+    for feature_name in feature_ch :
+        strategy_given_by_user = liss_fill
+        if strategy_given_by_user == 'mean':
+            df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].mean())
+        elif strategy_given_by_user == 'mode':
+            df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].mode()[0])
+        elif strategy_given_by_user == 'median':
+            df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].median())
+    df.isnull().sum().sort_values(ascending = False)

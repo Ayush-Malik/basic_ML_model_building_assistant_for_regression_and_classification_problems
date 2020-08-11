@@ -1,73 +1,113 @@
-import streamlit as st
+from streamlit import *
 import pandas as pd 
 import numpy as np 
 from feature_eng import *
 
 
-activities = ["Home", "EDA", "Model Building", "About UsS"]	
-choice = st.sidebar.selectbox("Select Option",activities)
-st.set_option('deprecation.showfileUploaderEncoding', False)
+activities = ["Home", "EDA", "Model Building", "About Us"]	
+choice = sidebar.selectbox("Select Option",activities)
+set_option('deprecation.showfileUploaderEncoding', False)
 
-if choice == "Home":
-    st.markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
-    st.text("")
-    st.text("")
-    data = st.file_uploader("Upload The Dataset", type=["csv"])
-    if data != None :
+if choice == "Home": # For Navigating to Home Page
+    markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
+    text("")
+    text("")
+
+
+  
+    subheader("Upload the dataset!!!")
+    data = file_uploader("" , type=["csv"]) # Loading the dataset
+
+
+    if data != None : # Here if block runs only when user gives dataset
         df = pd.read_csv(data)
-        st.text("")
-        st.text("")        
-        st.subheader("Head the Dataset : ")
-        st.text("")
-        st.dataframe(df.head())
-        st.text("")
-        st.subheader("Shape of the Dataset : ")
-        st.text("")
-        st.write(df.shape)
-        st.text("")
-        st.text("")
+        
+        text("")
+        text("")  
+
+        subheader("Head the Dataset : ")
+        text("")
+
+        dataframe(df.head())
+        text("")
+
+        subheader("Shape of the Dataset : ")
+        text("")
+
+        write(df.shape)
+        text("")
+        text("")
+
         dic = type_of_feature(df)
-        st.subheader("Categories of different Features are : ")
-        st.write(dic)
-        st.text("")
+        subheader("Categories of different Features are : ")
+        write(dic)
+        text("")
+
         missing_values_count = null_value(df)
-        st.subheader("The Missing Values In Dataset and Strategey to Fill them : ")
-        st.write(missing_values_count)
-        st.text("")
-        st.text("")
-        st.write("Null Values in Heatmap Form")
-        st.text("")
+        subheader("The Missing Values In Dataset and Strategey to Fill them : ")
+        write(missing_values_count)
+        text("")
+        text("")
+
+        write("Null Values in Heatmap Form")
+        text("")
+    
         heat_plot = heatmap_generator(df.isnull())
-        st.pyplot()
-        st.text("")
-        st.text("")
-        st.subheader("Imbalanced Features in Dataset are : ")
+        pyplot()
+        text("")
+        text("")
+
+        subheader("Imbalanced Features in Dataset are : ")
         ls = imbalanced_feature(df)
+
         if ls == []:
-            st.write("There are no imbalanced Features in Dataset")
+            write("There are no imbalanced Features in Dataset")
         else:
-            st.dataframe(ls)
-        st.text("")
-        st.text("")
+            dataframe(ls)
+        text("")
+        text("")
+
         categorical = cat_num(df)
         new_cat = ["Choose The Feature"]
         new_cat.extend(categorical)
-        if st.checkbox("Show value count of a Categorical feature"):
-            categorical_feature = st.selectbox("Select Categorical Feature", new_cat)
+
+        if checkbox("Show value count of a Categorical feature"):
+            categorical_feature = selectbox("Select Categorical Feature", new_cat)
             if categorical_feature != "Choose The Feature":
                 percent_pie = prcntage_values( categorical_feature, df)
-                st.write(percent_pie)
-                st.pyplot()
+                write(percent_pie)
+                pyplot()
             
-        if st.checkbox("Show compaerison b/w two categorical features"):
-            st.subheader("Two features categorical values combined comparator")
+        if checkbox("Show compaerison b/w two categorical features"):
+            subheader("Two features categorical values combined comparator")
 
-            categorical1 = st.selectbox("Select First Categorical Feature", new_cat)
-            categorical2 = st.selectbox("Select Second Categorical Feature", new_cat)
-            if categorical1 != "Choose The Feature" and categorical2 != "Choose The Feature":
-                cat_lis = [categorical1, categorical2]
-                comp_plot = different_cat_comparator(cat_lis, df)
-                st.write(comp_plot)
-                st.pyplot()
+            categorical1 = selectbox("Select First Categorical Feature", new_cat)
+            categorical2 = selectbox("Select Second Categorical Feature", new_cat)
+            if categorical1!= "Choose The Feature" and categorical2 != "Choose The Feature":
+                cat_lis          = [categorical1, categorical2] 
+                comparison_plot = two_cat_comparator( cat_lis , df )
+                write(comparison_plot)
+                pyplot()
 
-       
+        subheader("Select the features to be droped")
+        text("")
+        missing_lis = missing_value_lis(df)
+        lis_drop = multiselect("Select Feature", missing_lis) 
+        feature_tracker = drop_feat(df, lis_drop)
+        
+        subheader("Select Features to be filled")
+        lis_fill = []
+        feature_ch = []
+        for feature in feature_tracker:
+            if checkbox(feature):
+                strategy = selectbox("Choose strategy", ["mean", "median", "mode"])
+                lis_fill.append(strategy)
+                feature_ch.append(feature)
+        fill_feature(df, feature_ch , lis_fill)
+    
+
+
+
+
+
+
