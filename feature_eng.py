@@ -156,7 +156,7 @@ def fill_feature(df, feature_ch, liss_fill):
 def useless_feat(df):
     useless_ls = []
     for col in df.columns: 
-        if df[col].nunique() >= df.shape[0] - 20:
+        if df.dtypes[col] == "O" and df[col].nunique() >= 0.05*df.shape[0]:
             useless_ls.append(col)
     useless_df = pd.DataFrame(useless_ls, columns = ["Feature"]) 
     return(useless_df)

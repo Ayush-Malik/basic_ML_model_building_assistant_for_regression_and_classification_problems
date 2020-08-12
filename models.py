@@ -117,3 +117,15 @@ def acc_measure_reg(y_test, y_pred):
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
+def feature_list(df):
+    fe_list = []
+    for col in df.columns:
+        fe_list.append(col)
+    return fe_list
+
+def set_target(df, target_feature):
+    # Suggestion from us
+    if len(df[target_feature].unique()) < 10 :
+        return("Classification", "Acc to us this is a Classification Problem 😁😁 \n .Rest is Your Choice. \n Ignore At your Own Risk 🤣🤣🤣")
+    else:
+        return("Regression", "Acc to us this is a Regression Problem 😁😁 \n .Rest is Your Choice. \n Ignore At your Own Risk 🤣🤣🤣")

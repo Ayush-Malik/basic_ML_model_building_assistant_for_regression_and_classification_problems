@@ -4,6 +4,7 @@ import numpy as np
 from feature_eng import *
 from models import *
 from EDA import *
+from models import *
 import base64
 
 
@@ -134,8 +135,6 @@ if choice == "Home": # For Navigating to Home Page
 
             text("")
             write("There are now no null values and also there are no Imbalanced or useless Features")
-            heat_plot = heatmap_generator(df.isnull())
-            pyplot()
 
             text("")
             success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
@@ -195,3 +194,37 @@ elif choice == "EDA": # For Navigating to Home Page
         if selected_features != [] and vals != "Feature":
             fig4 = sun_burst(df , selected_features, vals)
             plotly_chart(fig4)
+
+elif choice == "Model Building": # For Navigating to Home Page
+    markdown("<h1 style='text-align: center; color: green;'>Model Building And Training</h1>", unsafe_allow_html=True)
+    text("")
+    text("")
+
+    df = pd.read_csv('update.csv')
+    dataframe(df.head())
+    fe_list = feature_list(df)
+    text("")
+
+    text("")
+    df = pd.get_dummies(df , drop_first = True)
+    info("After converting Categorical Features into Numerical Ones, The current dataset is")
+    dataframe(df.head())
+    text("")
+
+    text("")
+    nlist = ["Feature"]
+    nlist.extend(fe_list)
+    subheader("Select The Target Feature For the Dataset")
+    text("")
+    target_feature = selectbox("Select Feature", nlist)
+    if target_feature != "Feature":
+        typ, statem = set_target(df, target_feature)
+        info(statem)
+    if checkbox("Want to change the Problem Type (Classification / Regression)"):
+        if typ == "Regression":
+            typ = "Classification"
+            info("According to You its a " + typ + " Problem")
+        else:
+            typ = "Regression"
+            info("According to You its a " + typ + " Problem")
+
