@@ -140,14 +140,27 @@ def drop_feat(df, lis_drop):
     return(feature_tracker, "Features Were Dropped Successfully")
 
 
-def fill_feature(df, feature_ch, liss_fill):
-        
+def fill_feature(df, feature_ch, liss_fill): 
+    i = 0   
     for feature_name in feature_ch :
-        strategy_given_by_user = liss_fill
+        strategy_given_by_user = liss_fill[i]
         if strategy_given_by_user == 'mean':
             df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].mean())
         elif strategy_given_by_user == 'mode':
             df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].mode()[0])
         elif strategy_given_by_user == 'median':
             df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].median())
-    df.isnull().sum().sort_values(ascending = False)
+        i += 1
+    return(pd.DataFrame(df.isnull().sum().sort_values(ascending = False),columns = ["Null value Count"]))
+
+def useless_feat(df):
+    useless_ls = []
+    for col in df.columns: 
+        if df[col].nunique() >= df.shape[0] - 20:
+            useless_ls.append(col)
+    useless_df = pd.DataFrame(useless_ls, columns = ["Feature"]) 
+    return(useless_df)
+
+def drop_useless_feat(df, feature):
+    df.drop([feature], axis = 1, inplace = True)
+
