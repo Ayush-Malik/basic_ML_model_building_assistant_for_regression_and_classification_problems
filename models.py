@@ -9,6 +9,27 @@ from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, r2_score, m
 from streamlit import *
 
 
+models_mapper = {
+    # Regressors
+    'LinearRegression': LinearRegression(),
+    'RandomForestRegressor': RandomForestRegressor(),
+    'AdaBoostRegressor': AdaBoostRegressor(),
+    'SVR': SVR(),
+    'MLPRegressor': MLPRegressor(),
+    'DecisionTreeRegressor': DecisionTreeRegressor(),
+    'XGBRegressor': XGBRegressor(),
+
+    #Classifiers
+    'LogisticRegression': LogisticRegression(),
+    'RandomForestClassifier': RandomForestClassifier(),
+    'AdaBoostClassifier': AdaBoostClassifier(),
+    'SVC': SVC(),
+    'MLPClassifier': MLPClassifier(),
+    'DecisionTreeClassifier()': DecisionTreeClassifier(),
+    'XGBClassifier': XGBClassifier(),
+}
+
+
 # Regressors
 def linear_regression(X_train, X_test, y_train, y_test):
     regressor = LinearRegression()
@@ -303,7 +324,3 @@ def acc_measure_reg(y_test, y_pred):
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
-
-
-# function for finding different scores ---- remaining
-# function for self.dict so that it should return y_pred according the the value passed by the user ---- remaining
