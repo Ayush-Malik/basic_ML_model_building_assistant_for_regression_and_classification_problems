@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np 
 from feature_eng import *
 from models import *
+import base64
 
 
 activities = ["Home", "EDA", "Model Building", "About Us"]	
@@ -10,7 +11,7 @@ choice = sidebar.selectbox("Select Option",activities)
 set_option('deprecation.showfileUploaderEncoding', False)
 
 if choice == "Home": # For Navigating to Home Page
-    markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
+    markdown("<h1 style='text-align: center; color: green;'>Feature Engineering</h1>", unsafe_allow_html=True)
     text("")
     text("")
 
@@ -62,7 +63,7 @@ if choice == "Home": # For Navigating to Home Page
         ls = imbalanced_feature(df)
 
         if ls == []:
-            write("There are no imbalanced Features in Dataset")
+            info("There are no imbalanced Features in Dataset")
         else:
             dataframe(ls)
         text("")
@@ -92,7 +93,8 @@ if choice == "Home": # For Navigating to Home Page
         missing_lis = missing_value_lis(df)
         lis_drop = multiselect("Select Feature", missing_lis) 
         feature_tracker, sent = drop_feat(df, lis_drop)
-        write(sent)
+        if lis_drop != []:
+            success(sent)
         
         subheader("Select Features to be filled")
         lis_fill = []
@@ -104,14 +106,51 @@ if choice == "Home": # For Navigating to Home Page
                 if strategy != "strategy":
                     lis_fill.append(strategy)
                     feature_ch.append(feature)
-                    write("Feature filled Successfully")
+                    success("Feature filled Successfully")
                 count += 1
-        fill_feature(df, feature_ch , lis_fill)
+        no_null = fill_feature(df, feature_ch , lis_fill)
+        text("")
+        write(no_null)
 
-        Models([np.array([2,3,45,67,84,56,233,34,66]).reshape(-1, 1), np.array([5,4,25,47,44]).reshape(-1, 1)], [[2,3,45,67,84,56,233,34,66], [5,4,25,47,44]], ["LinearRegression", "RandomForestRegressor", "AdaBoostRegressor"]).model_call()
+        text("")
+        subheader("Checking Useless Features")
+        write("The features which have unique values nearly equal to the dataset are:")
+        usl_df = useless_feat(df)
+        write(usl_df)
+        text("")
+        flag = 0
+        for feature in usl_df["Feature"]:
+            if checkbox("Select to drop " + feature):
+                drop_useless_feat(df, feature)
+                success("Feature Dropped Successfully")
+                flag += 1
+        text("")
+        text("")
+        if flag != 0:
+            subheader("After Doing all of the above Feature Engineering The datest is now as below")
+            text("")
+            dataframe(df.head())
 
+            text("")
+            write("There are now no null values and also there are no Imbalanced or useless Features")
+            heat_plot = heatmap_generator(df.isnull())
+            pyplot()
 
+            text("")
+            success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
 
+            text("")
+        info("To download this updated dataset click the link below")
+        csv = df.to_csv(index=False)
+        b64 = base64.b64encode(csv.encode()).decode()
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+        markdown(href, unsafe_allow_html=True)
+            
 
-
+elif choice == "EDA": # For Navigating to Home Page
+    markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
+    text("")
+    text("")
+    df = pd.read_csv(csv)
+    write(df.shape)
 
