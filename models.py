@@ -30,7 +30,10 @@ models_mapper = {
 }
 
 
-def Model_Trainer(Model, model_name, problem, X_train, X_test, y_train, y_test):
+def Model_Trainer(Model, model_name, problem, X, y):
+    X_train, X_test = X[0], X[1]
+    y_train, y_test = y[0], y[1]
+    
     Model.fit(X_train, y_train)
     y_pred = Model.predict(X_test)
     info(model_name, ':-')
@@ -56,10 +59,8 @@ class Models:
         >>> Models([X_train, X_test], [y_train, y_test], "Regression", ["LinearRegression", "RandomForestRegressor"])
         >>> Models([X_train, X_test], [y_train, y_test], "Classification", ["DecisionTreeClassifier", "RandomForestClassifier"])
         '''
-        self.X_train = X_list[0]
-        self.X_test = X_list[1]
-        self.y_train = y_list[0]
-        self.y_test = y_list[1]
+        self.X = X_list
+        self.y = y_list
         self.problem = problem
         self.model_list = model_list
         self.dict = dict()
@@ -87,9 +88,8 @@ class Models:
             for model_name in self.model_list:
                 Model = models_mapper[model_name]
                 pred_output = Model_Trainer(
-                    Model, model_name, self.problem,
-                    self.X_train, self.X_test,
-                    self.y_train, self.y_test
+                    Model, model_name,
+                    self.problem, self.X, self.y
                 )
                 self.dict[model_name] = pred_output
 
