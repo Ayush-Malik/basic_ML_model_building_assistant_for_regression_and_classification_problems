@@ -13,15 +13,29 @@ import cufflinks as cf
 cf.go_offline()
 
 
+#[0]
+def num_num(df):
+    dic = dict(df.dtypes)
+
+    categorical_features = []
+    numerical_features = []
+
+    for val in dic:
+        if dic[val] == 'object':
+            categorical_features.append(val)
+        else:
+            numerical_features.append(val)
+    return(numerical_features, categorical_features)
+
 # [1] Correlation heatmap plotting function
 # --> This particular function accepts a list with selected categorical features and returns a correlation heatmap
 def correlation_heatmap(df , selected_features):
     # for example selected_features = ['Age' , 'Fare' , 'Survived'] , This will produce a correlation heatmap of 3x3
     data = np.array( df[ selected_features ].corr() )
     fig = px.imshow(data,
-                    labels=dict( color = "Productivity"),
-                    x=  lis,
-                    y = lis
+                    labels=dict( color = "Correlation"),
+                    x=  selected_features,
+                    y = selected_features
                 )
     return fig
 
