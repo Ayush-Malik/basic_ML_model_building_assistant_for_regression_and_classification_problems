@@ -11,15 +11,18 @@ import base64
 activities = ["Home", "EDA", "Model Building", "About Us"]	
 choice = sidebar.selectbox("Select Option",activities)
 set_option('deprecation.showfileUploaderEncoding', False)
+markdown_style = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
+markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
+
+
 
 if choice == "Home": # For Navigating to Home Page
     markdown("<h1 style='text-align: center; color: green;'>Feature Engineering</h1>", unsafe_allow_html=True)
     text("")
     text("")
 
-
-  
-    subheader("Upload the dataset!!!")
+    markdown("<p style='" + markdown_style2 +
+             "' >Upload the dataset!!!</p>", unsafe_allow_html=True)
     data = file_uploader("" , type=["csv"]) # Loading the dataset
 
 
@@ -29,31 +32,34 @@ if choice == "Home": # For Navigating to Home Page
         text("")
         text("")  
 
-        subheader("Head the Dataset : ")
+        markdown("<p style='" + markdown_style2 +
+                 "' >Head of the Dataset:- </p>", unsafe_allow_html=True)
         text("")
 
         dataframe(df.head())
         text("")
 
-        subheader("Shape of the Dataset : ")
-        text("")
-
-        write(df.shape)
+        markdown("<p style='" + markdown_style +
+                 "' >Shape of the Dataset:-  "+ str(df.shape) + "</p>", unsafe_allow_html=True)
         text("")
         text("")
 
         dic = type_of_feature(df)
-        subheader("Categories of different Features are : ")
+        markdown("<p style='" + markdown_style2 +
+                 "' >Categories of Features:- </p>", unsafe_allow_html=True)
         write(dic)
         text("")
 
         missing_values_count = null_value(df)
-        subheader("The Missing Values In Dataset and Strategey to Fill them : ")
+        markdown("<p style='" + markdown_style2 +
+                 "' >The Missing Values and Strategey:- </p>", unsafe_allow_html=True)
         write(missing_values_count)
         text("")
         text("")
 
-        write("Null Values in Heatmap Form")
+        markdown("<p style='" + markdown_style +
+                 "' >Heatmap for null values</p>", unsafe_allow_html=True)
+        write("")
         text("")
     
         heat_plot = heatmap_generator(df.isnull())
@@ -61,44 +67,56 @@ if choice == "Home": # For Navigating to Home Page
         text("")
         text("")
 
-        subheader("Imbalanced Features in Dataset are : ")
         ls = imbalanced_feature(df)
 
         if ls == []:
             info("There are no imbalanced Features in Dataset")
         else:
+            markdown("<p style='" + markdown_style2 +
+                     "' >Imbalanced Features in Dataset are:- </p>", unsafe_allow_html=True)
             dataframe(ls)
         text("")
         text("")
 
         categorical = cat_num(df)
-        new_cat = ["Choose The Feature"]
-        new_cat.extend(categorical)
 
         if checkbox("Show value count of a Categorical feature"):
-            categorical_feature = selectbox("Select Categorical Feature", new_cat)
+            new_cat = ["Choose The Feature"]
+            new_cat.extend(categorical)
+            categorical_feature = selectbox("", new_cat)
             if categorical_feature != "Choose The Feature":
                 percent_pie = prcntage_values( categorical_feature, df)
                 plotly_chart(percent_pie)
             
-        if checkbox("Show compaerison b/w two categorical features"):
-            subheader("Two features categorical values combined comparator")
+        text("")
+        if checkbox("Show comparison b/w two categorical features"):
+            markdown("<p style='" + markdown_style + "' >Two categorical features values combined comparator</p>", unsafe_allow_html=True)
 
-            categorical1 = selectbox("Select First Categorical Feature", new_cat)
-            categorical2 = selectbox("Select Second Categorical Feature", new_cat)
-            if categorical1!= "Choose The Feature" and categorical2 != "Choose The Feature":
-                cat_lis          = [categorical1, categorical2] 
+            new_cat = ["Select First Categorical Feature"]
+            new_cat.extend(categorical)
+            categorical1 = selectbox("", new_cat)
+            
+            new_cat2 = ["Select Second Categorical Feature"]
+            new_cat2.extend(categorical)
+            categorical2 = selectbox("", new_cat2)
+            
+            if categorical1 != "Select First Categorical Feature" and categorical2 != "Select Second Categorical Feature":
+                cat_lis = [categorical1, categorical2] 
                 comparison_plot = two_cat_comparator( cat_lis , df )
                 plotly_chart(comparison_plot)
 
-        subheader("Select the feature to be dropped")
+        text("")
+        markdown("<p style='" + markdown_style2 +
+                 "' >Select the feature to be dropped:-</p>", unsafe_allow_html=True)
         missing_lis = missing_value_lis(df)
-        lis_drop = multiselect("Select Feature", missing_lis) 
+        lis_drop = multiselect("", missing_lis) 
         feature_tracker, sent = drop_feat(df, lis_drop)
         if lis_drop != []:
             success(sent)
         
-        subheader("Select Features to be filled")
+        text("")
+        markdown("<p style='" + markdown_style2 +
+                 "' >Select Features to be filled:-</p>", unsafe_allow_html=True)
         lis_fill = []
         feature_ch = []
         count = 0
@@ -115,8 +133,9 @@ if choice == "Home": # For Navigating to Home Page
         write(no_null)
 
         text("")
-        subheader("Checking Useless Features")
-        write("The features which have unique values nearly equal to the dataset are:")
+        markdown("<p style='" + markdown_style2 +
+                 "' >Useless Features:-</p>", unsafe_allow_html=True)
+        write("The features which have high unique values are:")
         usl_df = useless_feat(df)
         write(usl_df)
         text("")
@@ -129,7 +148,7 @@ if choice == "Home": # For Navigating to Home Page
         text("")
         text("")
         if flag != 0:
-            subheader("After Doing all of the above Feature Engineering The datest is now as below")
+            subheader("After Doing all of the above Feature Engineering The dataset is now as below")
             text("")
             dataframe(df.head())
 

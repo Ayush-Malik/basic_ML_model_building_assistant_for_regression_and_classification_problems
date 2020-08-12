@@ -37,7 +37,7 @@ def null_value(df):
             Strategy.append('mean')
 
     for i in range(len(missing_values_count)):
-        if missing_values_count['%age_Null_val_count'][i] >= 85 :
+        if missing_values_count['%age_Null_val_count'][i] >= 50 :
             Strategy[i] = 'Drop it'
     missing_values_count['Data_Type']                 = Data_Types 
     missing_values_count['Strategy_that_can_be_used'] = Strategy
@@ -52,8 +52,8 @@ def heatmap_generator(data, yticklabel=False, cbar_value=False):
     
     Example
     =========
-    >>>heatmap_generator(df.isnull())
-    >>>plots heatmap to display all null values in the dataset.
+    >>> heatmap_generator(df.isnull())
+    >>> plots heatmap to display all null values in the dataset.
     '''
     return(sns.heatmap(data, yticklabels = yticklabel, cbar = cbar_value))
 
