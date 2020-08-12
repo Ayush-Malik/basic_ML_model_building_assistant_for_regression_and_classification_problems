@@ -33,7 +33,7 @@ models_mapper = {
 def Model_Trainer(Model, model_name, problem, X_train, X_test, y_train, y_test):
     Model.fit(X_train, y_train)
     y_pred = Model.predict(X_test)
-    subheader(model_name, ':-')
+    info(model_name, ':-')
 
     if problem.lower() == 'regression':
         acc_measure = acc_measure_reg(y_test, y_pred)
@@ -71,16 +71,16 @@ class Models:
         '''
         if self.model_list == None:
             # To track for model_list is empty or not
-            return "No model selected; model_list got None Attribute"
+            error("No model selected; model_list got None Attribute")
         
         elif type(self.model_list) != list:
             # To track type for model_list
-            return f"Could not recognize {type(self.model_list)} object; List object must be passed"
+            error(f"Could not recognize {type(self.model_list)} object; List object must be passed")
         
         else:
             # For calling respective functions according to the model_list
             text("")
-            subheader("Working On It! Please Wait For a While")
+            success("Working On It! Please Wait For a While")
             text("")
             text("")
             
