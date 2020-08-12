@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np 
 from feature_eng import *
 from models import *
+from EDA import *
 import base64
 
 
@@ -140,17 +141,57 @@ if choice == "Home": # For Navigating to Home Page
             success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
 
             text("")
+            balloons()
         info("To download this updated dataset click the link below")
         csv = df.to_csv(index=False)
         b64 = base64.b64encode(csv.encode()).decode()
         href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
         markdown(href, unsafe_allow_html=True)
+        df.to_csv("update.csv",index=False)
             
 
 elif choice == "EDA": # For Navigating to Home Page
     markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
     text("")
     text("")
-    df = pd.read_csv(csv)
-    write(df.shape)
+    df = pd.read_csv('update.csv')
+    dataframe(df.head())
+    text("")
+    numerical_feat,categorical_features = num_num(df)
+    if checkbox("Select to Visulaize Correlation heatmap"):
+        selected_features = multiselect("Select Feature", numerical_feat)
+        if selected_features != []:
+            fig = correlation_heatmap(df , selected_features)
+            plotly_chart(fig)
+    
+    text("")
+    if checkbox("Select to Visulaize Box Plot"):
+        selected_features = multiselect("Select Feature", numerical_feat, key=2)
+        if len(selected_features) >= 2:
+            fig2 = box_plot(df , selected_features)
+            plotly_chart(fig2)
 
+    tot_lis = numerical_feat.copy()
+    tot_lis.extend(categorical_features)
+
+    text("")
+    if checkbox("Select to Visulaize Histo Gram"):
+        selected_features = multiselect("Select Feature", tot_lis, key=4)
+        if selected_features != [] and len(selected_features) <= 2:
+            fig3 = histo_gram(df , selected_features)
+            plotly_chart(fig3)
+        elif len(selected_features) > 2:
+            warning("You are trying to select excessive Features")
+
+    new_num = numerical_feat.copy()
+    newl = ["Feature"]
+    newl.extend(new_num)
+
+    text("")
+    if checkbox("Select to Visulaize Sun Burst Plot"):
+        selected_features = multiselect("Select Feature", tot_lis, key=5)
+        text("")
+        vals = selectbox("Select Feature", newl)
+        if selected_features != [] and vals != "Feature":
+            fig4 = sun_burst(df , selected_features, vals)
+            plotly_chart(fig4)
