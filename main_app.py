@@ -8,5 +8,5 @@ set_option('deprecation.showfileUploaderEncoding', False)
 if choice == "Home": # For Navigating to Home Page
     Home()
 
-elif choice == "EDA": # For Navigating to Home Page
+elif choice == "EDA": # For Navigating to EDA Page
     EDA()
