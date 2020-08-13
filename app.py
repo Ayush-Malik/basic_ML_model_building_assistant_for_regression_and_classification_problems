@@ -2,7 +2,6 @@ from streamlit import *
 import pandas as pd 
 import numpy as np 
 from feature_eng import *
-from models import *
 from EDA import *
 from models import *
 import base64
@@ -149,15 +148,15 @@ if choice == "Home": # For Navigating to Home Page
         usl_df = useless_feat(df)
         write(usl_df)
         text("")
-        flag = 0
         for feature in usl_df["Feature"]:
             if checkbox("Select to drop " + feature):
                 drop_useless_feat(df, feature)
                 success("Feature Dropped Successfully")
-                flag += 1
+
         text("")
         text("")
-        if flag != 0:
+        
+        if button("Click if All done"):
             subheader("After Doing all of the above Feature Engineering The dataset is now as below")
             text("")
             dataframe(df.head())
@@ -195,7 +194,7 @@ elif choice == "EDA": # For Navigating to Home Page
     
     text("")
     if checkbox("Select to Visulaize Box Plot"):  #must show an error that you cannot pass more than 2 values
-        selected_features = multiselect("Select Feature", numerical_feat, key=2)
+        selected_features = multiselect("Select minimum two Feature", numerical_feat,key=2)
         if len(selected_features) >= 2:
             fig2 = box_plot(df , selected_features)
             plotly_chart(fig2)
@@ -204,7 +203,7 @@ elif choice == "EDA": # For Navigating to Home Page
     tot_lis.extend(categorical_features)
 
     text("")
-    if checkbox("Select to Visulaize Histo Gram"):
+    if checkbox("Select to Visualize Histo Gram"):
         selected_features = multiselect("Select Feature", tot_lis, key=4)
         if selected_features != [] and len(selected_features) <= 2:
             fig3 = histo_gram(df , selected_features)
@@ -217,7 +216,7 @@ elif choice == "EDA": # For Navigating to Home Page
     newl.extend(new_num)
 
     text("")
-    if checkbox("Select to Visulaize Sun Burst Plot"):
+    if checkbox("Select to Visualize Sun Burst Plot"):
         selected_features = multiselect("Select Feature", tot_lis, key=5)
         text("")
         vals = selectbox("Select Feature", newl)
@@ -260,4 +259,54 @@ elif choice == "Model Building": # For Navigating to Home Page
             else:
                 typ = "Regression"
                 info("Changed successfully, Now its a " + typ + " Problem")
+    if target_feature != "Feature":
+        text("")
+        markdown("<p style='" + markdown_style2 +
+                "' >Let's Start Splitting The Dataset</p>", unsafe_allow_html=True)
+        text("")
+        prcntage = 0.82
+        info("By default Percentage of Training Data is 82 %")
+        text("")
+        if checkbox("Select to Change Training Dataset Size"):
+            prcntage = slider('Select percentage',60, 86)
+            write("You selected : ", prcntage, "percent for training Dataset")
+            prcntage = prcntage/100
+        train, test = train_test_splitter(df, prcntage)
+        text("")
+        
+        markdown("<p style='" + markdown_style +
+                    "' >Shape of the Training Dataset:-  "+ str(train.shape) + "</p>", unsafe_allow_html=True)
+        text("")
+        markdown("<p style='" + markdown_style +
+                    "' >Shape of the Test Dataset:-  "+ str(test.shape) + "</p>", unsafe_allow_html=True)
+        text("")
+        text("")
 
+        x_train, x_test, y_train, y_test = x_y_maker(target_feature, train, test)
+        info("Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
+
+        text("")
+        text("")
+        x_list = [x_train, x_test]
+        y_list = [y_train, y_test]
+        mlists = []
+        if target_feature == "Regression":
+            mlists = ['LinearRegression','RandomForestRegressor','AdaBoostRegressor','SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
+        else:
+            mlists = ['LogisticRegression','RandomForestClassifier','AdaBoostClassifier','SVC','MLPClassifier','DecisionTreeClassifier','XGBClassifier']
+        models_lists = multiselect("Select Models", mlists)
+        model_object = Models(x_list, y_list, target_feature,models_lists)
+        model_object.model_call()
+        extra = ["Select"]
+        extra.extend(models_lists)
+        if checkbox("Select to get Y_predictions of a model"):
+            selectd_models = selectbox("Select Model", extra)
+            if selectd_models != "Select":
+                y_pred = model_object.output(selectd_models)
+                y_pred = pd.DataFrame(y_pred)
+                dataframe(y_pred)
+                text("")
+                csv = y_pred.to_csv(index=False)
+                b64 = base64.b64encode(csv.encode()).decode()
+                href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+                markdown(href, unsafe_allow_html=True)
