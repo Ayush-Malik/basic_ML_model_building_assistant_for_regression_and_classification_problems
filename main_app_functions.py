@@ -9,16 +9,23 @@ import base64
 
 
 # Markdown Styles
-markdown_style = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
+markdown_style1 = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
 markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
+markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
 
 def Markdown_Style(value , type = 1):
     if type == 1:
-        markdown("<p style='" + markdown_style +
-                    "' >" + value + "</p>", unsafe_allow_html=True)
+        style_type = markdown_style1
+
     elif type == 2:
-        markdown("<p style='" + markdown_style2 +
-                    "' >" + value + "</p>", unsafe_allow_html=True)
+        style_type = markdown_style2
+    
+    elif type == 3:
+        style_type = markdown_style3
+
+
+    markdown("<p style='" + style_type +
+            "' >" + value + "</p>", unsafe_allow_html=True)
 
 
 #############################################################################################################################################################################################
@@ -34,10 +41,10 @@ def Cool_Data_Printer( sub_header = None , markdown_type_1 = None , markdown_typ
         subheader( sub_header )
 
     if markdown_type_1 is not None:
-        Markdown_Style( markdown_type_1 , 2 )
+        Markdown_Style( markdown_type_1 , 1 )
 
     if markdown_type_2 is not None:
-        Markdown_Style( markdown_type_2 , 1)
+        Markdown_Style( markdown_type_2 , 2)
     
     if data_frame is not None:
         dataframe( data_frame.head() )
@@ -54,16 +61,19 @@ def Cool_Data_Printer( sub_header = None , markdown_type_1 = None , markdown_typ
 
 ''' This particular function is used to print plots using 'pyplot' 
     or 'plotly_chart' functions of streamlit with a markdown_type_1 '''
-def Cool_Plot_Printer(plot , sub_header = None , markdown_type_1 = None , markdown_type_2 = None , plot_print_type = None  ):
+def Cool_Plot_Printer(plot , sub_header = None , markdown_type_1 = None , markdown_type_2 = None  , markdown_type_3 = None , plot_print_type = None  ):
 
     if sub_header is not None:
         subheader( sub_header )
 
     if markdown_type_1 is not None:
-        Markdown_Style( markdown_type_1 , 2 )
+        Markdown_Style( markdown_type_1 , 1 )
 
     if markdown_type_2 is not None:
-        Markdown_Style( markdown_type_2 , 1)
+        Markdown_Style( markdown_type_2 , 2 )
+    
+    if markdown_type_3 is not None:
+        Markdown_Style( markdown_type_3 , 3 )
     
     if plot_print_type == 'pyplot':
         pyplot()
@@ -76,11 +86,19 @@ def Cool_Plot_Printer(plot , sub_header = None , markdown_type_1 = None , markdo
 
 ''' This particular function provides [ checkbox + selectbox / Multiselect ] 
     functionalitis and it return , it returns a list of features selected by user '''
-def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , markdown_type_1 = None ,  select_box_text_type_1 = None  , select_box_text_type_2 = None , multi_select_box_text = None   ):
+def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , sub_header = None , markdown_type_1 = None , markdown_type_2 = None , markdown_type_3 = None ,    select_box_text_type_1 = None  , select_box_text_type_2 = None , multi_select_box_text = None   ):
     
+    if sub_header is not None:
+        subheader( sub_header )
+
     if markdown_type_1 is not None:
-        subheader( markdown_type_1 )
+        Markdown_Style( markdown_type_1 , 1 )
+
+    if markdown_type_2 is not None:
+        Markdown_Style( markdown_type_2 , 2 )
     
+    if markdown_type_3 is not None:
+        Markdown_Style( markdown_type_3 , 3 )
     
     if checkbox( checkbox_text ):
 
@@ -175,15 +193,13 @@ def useless_features_manager(df):
 
 
 def final_summary_provider(df , flag):
-        if flag != 0:
-            subheader("After Doing all of the above Feature Engineering The datest is now as below")
+        if button("Click if All done"):
+            subheader("After Doing all of the above Feature Engineering The dataset is now as below")
             text("")
             dataframe(df.head())
 
             text("")
             write("There are now no null values and also there are no Imbalanced or useless Features")
-            heat_plot = heatmap_generator(df.isnull())
-            pyplot()
 
             text("")
             success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
@@ -195,16 +211,15 @@ def final_summary_provider(df , flag):
         b64 = base64.b64encode(csv.encode()).decode()
         href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
         markdown(href, unsafe_allow_html=True)
-        df.to_csv('update.csv' , index=False)
+        df.to_csv("update.csv",index=False)
 
 
 #############################################################################################################################################################################################
 def Home():
-    markdown("<h1 style='text-align: center; color: green;'>Feature Engineering</h1>", unsafe_allow_html=True)
+    Markdown_Style("Feature Engineering" , 3)
     text("")
     text("")
-    markdown_type_1 = "Upload the dataset!!!"
-    Markdown_Style(markdown_type_1 , 2)
+    Markdown_Style("Upload the dataset!!!" , 2)
 
     data = file_uploader("" , type=["csv"]) # Loading the dataset
 
@@ -214,34 +229,34 @@ def Home():
         df = pd.read_csv(data)
 
         # Head (Top 5 rows) of the dataset
-        markdown_type_1 = "Head of the Dataset :"
-        Cool_Data_Printer( markdown_type_1 = markdown_type_1 , data_frame = df.head() )
+        markdown_type_2 = "Head of the Dataset :"
+        Cool_Data_Printer( markdown_type_2 = markdown_type_2 , data_frame = df.head() )
 
         # Shape (rows x columns) of the dataset
-        markdown_type_2 = "Shape of the Dataset : " + str(df.shape)
-        Cool_Data_Printer( markdown_type_2 = markdown_type_2 )
+        markdown_type_1 = "Shape of the Dataset : " + str(df.shape)
+        Cool_Data_Printer( markdown_type_1 = markdown_type_1 )
        
         # DataTypes of different features of df
-        markdown_type_1 = "Categories of Features : "
-        Cool_Data_Printer(markdown_type_1 = markdown_type_1 , write_this = type_of_feature(df))
+        markdown_type_2 = "Categories of Features : "
+        Cool_Data_Printer(markdown_type_2 = markdown_type_2 , write_this = type_of_feature(df))
 
         # Missing values counter
-        markdown_type_1 = "The Missing Values and Strategey :"
-        Cool_Data_Printer(markdown_type_1 = markdown_type_1 , write_this = null_value(df))
+        markdown_type_2 = "The Missing Values and Strategey :"
+        Cool_Data_Printer(markdown_type_2 = markdown_type_2 , write_this = null_value(df))
             
         # Visualising the missing values
-        markdown_type_2 = "Heatmap for null values"
+        markdown_type_1 = "Heatmap for null values"
         plot = heatmap_generator(df.isnull()) 
-        Cool_Plot_Printer(plot , markdown_type_2 = markdown_type_2 , plot_print_type ='pyplot' )
+        Cool_Plot_Printer(plot , markdown_type_1 = markdown_type_1 , plot_print_type ='pyplot' )
 
         # # Finding imbalanced features 
-        # markdown_type_1 = "Imbalanced Features in Dataset are : "
+        # markdown_type_2 = "Imbalanced Features in Dataset are : "
         # ls = imbalanced_feature(df)
         # if ls == []:
         #     print_info = "There are no imbalanced Features in Dataset..."
-        #     Cool_Data_Printer(markdown_type_1 = markdown_type_1 , print_info = print_info )
+        #     Cool_Data_Printer(markdown_type_2 = markdown_type_2 , print_info = print_info )
         # else:
-        #     Cool_Data_Printer(markdown_type_1 = markdown_type_1 , data_frame = ls)
+        #     Cool_Data_Printer(markdown_type_2 = markdown_type_2 , data_frame = ls)
 
         # Preparing a lis of categorical feature named categorical and  new_cat[will be used in dropdowns]
         categorical = cat_num(df)
@@ -252,26 +267,26 @@ def Home():
         checkbox_text    = "Show value count of a Categorical feature"
         drop_down_list   =  new_cat
         select_box_text  = "Select Categorical Feature"
-        markdown_type_1       = "Categorical feature value counter"
+        sub_header       = "Categorical feature value counter"
         
         Cool_Data_Plotter(df ,
                           checkbox_text  , 
                           drop_down_list  , 
                           plot_type = 'pie_chart', 
-                          markdown_type_1 = markdown_type_1 , 
+                          sub_header = sub_header , 
                           select_box_text_type_1 = select_box_text  )
 
         # Two categorical features comparator
         checkbox_text       = "Show compaerison b/w two categorical features"
         drop_down_list      =  new_cat
         select_box_text_lis = ["Select First Categorical Feature" , "Select Second Categorical Feature" ] 
-        markdown_type_1          = "Two features categorical values combined comparator"
+        sub_header          = "Two features categorical values combined comparator"
 
         Cool_Data_Plotter(df ,
                           checkbox_text ,
                           drop_down_list  ,
                           plot_type = 'comparison_plot',
-                          markdown_type_1 = markdown_type_1 ,
+                          sub_header = sub_header ,
                           select_box_text_type_2 = select_box_text_lis )
 
         # Feature Dropper
