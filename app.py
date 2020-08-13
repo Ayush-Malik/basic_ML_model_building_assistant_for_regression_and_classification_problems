@@ -85,8 +85,14 @@ if choice == "Home": # For Navigating to Home Page
             new_cat.extend(categorical)
             categorical_feature = selectbox("", new_cat)
             if categorical_feature != "Choose The Feature":
-                percent_pie = prcntage_values( categorical_feature, df)
-                plotly_chart(percent_pie)
+                unique_len = len(df[categorical_feature].value_counts())
+                if unique_len > 7:
+                    dataframe(df[categorical_feature].value_counts())
+                    markdown("<p style='" + markdown_style +
+                             "' >Total unique values:-" + str(unique_len) + "</p>", unsafe_allow_html=True)
+                else:
+                    percent_pie = prcntage_values( categorical_feature, df)
+                    plotly_chart(percent_pie)
             
         text("")
         if checkbox("Show comparison b/w two categorical features"):
