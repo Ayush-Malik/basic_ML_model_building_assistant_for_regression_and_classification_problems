@@ -104,9 +104,11 @@ if choice == "Home": # For Navigating to Home Page
             new_cat.extend(categorical)
             categorical1 = selectbox("", new_cat)
             
-            new_cat2 = ["Select Second Categorical Feature"]
-            new_cat2.extend(categorical)
-            categorical2 = selectbox("", new_cat2)
+            if categorical1 != "Select First Categorical Feature":
+                new_cat2 = ["Select Second Categorical Feature"]
+                new_cat2.extend(categorical)
+                new_cat2.remove(categorical1)
+                categorical2 = selectbox("", new_cat2)
             
             if categorical1 != "Select First Categorical Feature" and categorical2 != "Select Second Categorical Feature":
                 cat_lis = [categorical1, categorical2] 
