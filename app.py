@@ -87,7 +87,7 @@ if choice == "Home": # For Navigating to Home Page
             categorical_feature = selectbox("", new_cat)
             if categorical_feature != "Choose The Feature":
                 unique_len = len(df[categorical_feature].value_counts())
-                if unique_len > 7:
+                if unique_len > 15:
                     dataframe(df[categorical_feature].value_counts())
                     markdown("<p style='" + markdown_style +
                              "' >Total unique values:-" + str(unique_len) + "</p>", unsafe_allow_html=True)
@@ -290,12 +290,12 @@ elif choice == "Model Building": # For Navigating to Home Page
         x_list = [x_train, x_test]
         y_list = [y_train, y_test]
         mlists = []
-        if target_feature == "Regression":
+        if typ == "Regression":
             mlists = ['LinearRegression','RandomForestRegressor','AdaBoostRegressor','SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
         else:
             mlists = ['LogisticRegression','RandomForestClassifier','AdaBoostClassifier','SVC','MLPClassifier','DecisionTreeClassifier','XGBClassifier']
         models_lists = multiselect("Select Models", mlists)
-        model_object = Models(x_list, y_list, target_feature,models_lists)
+        model_object = Models(x_list, y_list, typ,models_lists)
         model_object.model_call()
         extra = ["Select"]
         extra.extend(models_lists)
