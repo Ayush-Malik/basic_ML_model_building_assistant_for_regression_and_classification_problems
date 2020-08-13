@@ -25,7 +25,7 @@ models_mapper = {
     'AdaBoostClassifier': AdaBoostClassifier(),
     'SVC': SVC(),
     'MLPClassifier': MLPClassifier(),
-    'DecisionTreeClassifier()': DecisionTreeClassifier(),
+    'DecisionTreeClassifier': DecisionTreeClassifier(),
     'XGBClassifier': XGBClassifier(),
 }
 
@@ -36,7 +36,7 @@ def Model_Trainer(Model, model_name, problem, X, y):
     
     Model.fit(X_train, y_train)
     y_pred = Model.predict(X_test)
-    info(model_name, ':-')
+    info(model_name)
 
     if problem.lower() == 'regression':
         acc_measure = acc_measure_reg(y_test, y_pred)
@@ -129,3 +129,21 @@ def set_target(df, target_feature):
         return("Classification", "Acc to us this is a Classification Problem 😁😁 \n .Rest is Your Choice. \n Ignore At your Own Risk 🤣🤣🤣")
     else:
         return("Regression", "Acc to us this is a Regression Problem 😁😁 \n .Rest is Your Choice. \n Ignore At your Own Risk 🤣🤣🤣")
+
+def train_test_splitter(df, prcntage):
+
+    train_rows = int( len(df) * prcntage )
+    train = df.iloc[ : train_rows  : , : ]
+    test  = df.iloc[ train_rows  : : , : ]
+
+    return(train, test)
+
+def x_y_maker(target_feature, train, test):
+    y_train = train[target_feature].values
+    x_train = train.drop(target_feature , axis = 1)
+    x_train = x_train.values
+
+    y_test = test[target_feature].values
+    x_test = test.drop(target_feature , axis = 1)
+    x_test = x_test.values
+    return(x_train, x_test, y_train, y_test)
