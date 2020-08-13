@@ -13,11 +13,13 @@ choice = sidebar.selectbox("Select Option",activities)
 set_option('deprecation.showfileUploaderEncoding', False)
 markdown_style = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
 markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
+markdown_head = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
 
 
 
 if choice == "Home": # For Navigating to Home Page
-    markdown("<h1 style='text-align: center; color: green;'>Feature Engineering</h1>", unsafe_allow_html=True)
+    markdown("<h1 style='"+ markdown_head +"'>Feature Engineering</h1 >",
+            unsafe_allow_html=True)
     text("")
     text("")
 
@@ -102,9 +104,11 @@ if choice == "Home": # For Navigating to Home Page
             new_cat.extend(categorical)
             categorical1 = selectbox("", new_cat)
             
-            new_cat2 = ["Select Second Categorical Feature"]
-            new_cat2.extend(categorical)
-            categorical2 = selectbox("", new_cat2)
+            if categorical1 != "Select First Categorical Feature":
+                new_cat2 = ["Select Second Categorical Feature"]
+                new_cat2.extend(categorical)
+                new_cat2.remove(categorical1)
+                categorical2 = selectbox("", new_cat2)
             
             if categorical1 != "Select First Categorical Feature" and categorical2 != "Select Second Categorical Feature":
                 cat_lis = [categorical1, categorical2] 
@@ -175,7 +179,8 @@ if choice == "Home": # For Navigating to Home Page
             
 
 elif choice == "EDA": # For Navigating to Home Page
-    markdown("<h1 style='text-align: center; color: green;'>Exploratory data analysis</h1>", unsafe_allow_html=True)
+    markdown("<h1 style='" + markdown_head + "'>Exploratory data analysis</h1 >",
+             unsafe_allow_html=True)
     text("")
     text("")
     df = pd.read_csv('update.csv')
@@ -189,7 +194,7 @@ elif choice == "EDA": # For Navigating to Home Page
             plotly_chart(fig)
     
     text("")
-    if checkbox("Select to Visulaize Box Plot"):
+    if checkbox("Select to Visulaize Box Plot"):  #must show an error that you cannot pass more than 2 values
         selected_features = multiselect("Select Feature", numerical_feat, key=2)
         if len(selected_features) >= 2:
             fig2 = box_plot(df , selected_features)
@@ -221,7 +226,8 @@ elif choice == "EDA": # For Navigating to Home Page
             plotly_chart(fig4)
 
 elif choice == "Model Building": # For Navigating to Home Page
-    markdown("<h1 style='text-align: center; color: green;'>Model Building And Training</h1>", unsafe_allow_html=True)
+    markdown("<h1 style='" + markdown_head + "'>Model Building And Training</h1 >",
+             unsafe_allow_html=True)
     text("")
     text("")
 
@@ -239,17 +245,19 @@ elif choice == "Model Building": # For Navigating to Home Page
     text("")
     nlist = ["Feature"]
     nlist.extend(fe_list)
-    subheader("Select The Target Feature For the Dataset")
+    markdown("<p style='" + markdown_style2 +
+             "' >Select The Target Feature:-</p>", unsafe_allow_html=True) #Correlation can also be used
+    # subheader(" For the Dataset")
     text("")
-    target_feature = selectbox("Select Feature", nlist)
+    target_feature = selectbox("", nlist)
     if target_feature != "Feature":
         typ, statem = set_target(df, target_feature)
         info(statem)
-    if checkbox("Want to change the Problem Type (Classification / Regression)"):
-        if typ == "Regression":
-            typ = "Classification"
-            info("According to You its a " + typ + " Problem")
-        else:
-            typ = "Regression"
-            info("According to You its a " + typ + " Problem")
+        if checkbox("Want to change the Problem Type (Classification / Regression)"):
+            if typ == "Regression":
+                typ = "Classification"
+                info("Changed successfully, Now its a " + typ + " Problem")
+            else:
+                typ = "Regression"
+                info("Changed successfully, Now its a " + typ + " Problem")
 
