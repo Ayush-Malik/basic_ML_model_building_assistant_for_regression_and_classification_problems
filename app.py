@@ -112,7 +112,12 @@ if choice == "Home": # For Navigating to Home Page
             if categorical1 != "Select First Categorical Feature" and categorical2 != "Select Second Categorical Feature":
                 cat_lis = [categorical1, categorical2] 
                 comparison_plot = two_cat_comparator( cat_lis , df )
-                plotly_chart(comparison_plot)
+                try:
+                    plotly_chart(comparison_plot)
+                except:
+                    dataframe(comparison_plot)
+                    markdown("<p style='" + markdown_style +
+                             "' >x-axis--> "+ categorical1 + ", y-axis--> " + categorical2 +"</p>", unsafe_allow_html=True)
 
         text("")
         markdown("<p style='" + markdown_style2 +
@@ -310,3 +315,10 @@ elif choice == "Model Building": # For Navigating to Home Page
                 b64 = base64.b64encode(csv.encode()).decode()
                 href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
                 markdown(href, unsafe_allow_html=True)
+# Useless Features:-
+# null values, -ve msle (model training)
+# issue number 1st
+# model training me categorical feature k head k baad shape show krne h
+# update vali file delete krne h
+# working on it show tab krna h jab user kisi model ko select kre
+# sidebar pr website ka name bhi show krna tha jhalle

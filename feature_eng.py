@@ -103,23 +103,36 @@ def prcntage_values( categorical_feature, df):
 def two_cat_comparator( lis_of_feat , df ):
     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
     dic = {}
-    for cat_1 in df[type_1].value_counts().index: 
-        sub_lis = []
-        for cat_2 in df[type_2].value_counts().index:
-
-            new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
-            sub_lis.append( [ cat_2 ,   len(new)  ] )
-        dic[cat_1] = sub_lis
-   
- 
-    wow = []
-
-    for key in dic:
-        wow.append(  go.Bar(name = key  , x = np.array(dic[key])[: , 0]  , y = np.array(dic[key])[: , 1] )  )
-    fig = go.Figure(data = wow)
-    fig.update_layout(barmode='group')
+    unique_len_1 = len(df[type_1].value_counts())
+    unique_len_2 = len(df[type_1].value_counts())
     
-    return fig
+    if unique_len_1 > 20 or unique_len_2 > 20:
+        for cat_1 in df[type_1].value_counts().index:
+            sub_dict = {}
+            for cat_2 in df[type_2].value_counts().index:
+
+                new = df[(df[type_1] == cat_1) & (df[type_2] == cat_2)]
+                sub_dict[cat_2] = len(new)
+            dic[cat_1] = sub_dict
+        return dic
+    else:
+        for cat_1 in df[type_1].value_counts().index: 
+            sub_lis = []
+            for cat_2 in df[type_2].value_counts().index:
+
+                new = df[ ( df[type_1] == cat_1 ) & (df[type_2] == cat_2) ]
+                sub_lis.append( [ cat_2 ,   len(new)  ] )
+            dic[cat_1] = sub_lis
+    
+    
+        wow = []
+
+        for key in dic:
+            wow.append(  go.Bar(name = key  , x = np.array(dic[key])[: , 0]  , y = np.array(dic[key])[: , 1] )  )
+        fig = go.Figure(data = wow)
+        fig.update_layout(barmode='group')
+        
+        return fig
 
 def missing_value_lis(df):
     missing_values_count = null_value(df)
