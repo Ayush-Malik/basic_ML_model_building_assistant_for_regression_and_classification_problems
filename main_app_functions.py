@@ -49,29 +49,31 @@ def Home():
         new_cat.extend(categorical)
 
         # Pie chart for value_counts of a particular feature
-        checkbox_text    = "Show value count of a Categorical feature"
-        drop_down_list   =  new_cat
-        select_box_text  = "Select Categorical Feature"
-        sub_header       = "Categorical feature value counter"
+        checkbox_text           = "Show value count of a Categorical feature"
+        drop_down_list          =  new_cat
+        select_box_text_type_1  = ""
+        markdown_type_2         = "Categorical feature value counter"
         
         Cool_Data_Plotter(df ,
                           checkbox_text  , 
                           drop_down_list  , 
                           plot_type = 'pie_chart', 
-                          sub_header = sub_header , 
-                          select_box_text_type_1 = select_box_text  )
+                          markdown_type_2 = markdown_type_2 , 
+                          select_box_text_type_1 = select_box_text_type_1  )
 
         # Two categorical features comparator
-        checkbox_text       = "Show compaerison b/w two categorical features"
+
+        
+        checkbox_text       = "Show comparison b/w two categorical features"
         drop_down_list      =  new_cat
-        select_box_text_lis = ["Select First Categorical Feature" , "Select Second Categorical Feature" ] 
-        sub_header          = "Two features categorical values combined comparator"
+        select_box_text_lis = ["" , "" ] 
+        markdown_type_2     = "2 Categorical Feature Comparator"
 
         Cool_Data_Plotter(df ,
                           checkbox_text ,
                           drop_down_list  ,
                           plot_type = 'comparison_plot',
-                          sub_header = sub_header ,
+                          markdown_type_2 = markdown_type_2 ,
                           select_box_text_type_2 = select_box_text_lis )
 
         # Feature Dropper
