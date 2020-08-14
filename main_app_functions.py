@@ -2,6 +2,9 @@ from streamlit import *
 from Home_Page_Functions import *
 from EDA_Page_Functions import *
 
+# Extra
+from models import *
+
 #############################################################################################################################################################################################
 def Home():
     Markdown_Style("Feature Engineering" , 3)
@@ -84,14 +87,9 @@ def Home():
         final_summary_provider(df , flag)
 
 
-
+#############################################################################################################################################################################################
 
         
-
-
-
-
-
 def EDA():
     Markdown_Style('Exploratory data analysis' , 3)
     text("")
@@ -111,4 +109,106 @@ def EDA():
     # Sunburst
     EDA_sunburst(df)
 
+
+#############################################################################################################################################################################################
+
+
+def Model_Builder():
+    Markdown_Style('Model Building And Training' , 3)
+
+    text("")
+    text("")
+
+    # Loading the updated dataset which ready for model
+    df = pd.read_csv('update.csv')
+
+    dataframe(df.head())
+
+    fe_list = feature_list(df)
+    text("")
+    text("")
+
+
+    # Getting dummy variables of Categorical features
+    df = pd.get_dummies(df , drop_first = True)
+    info("After converting Categorical Features into Numerical Ones, The current dataset is")
+    dataframe(df.head())
+    text("")
+
+    # Getting the target feature from the user 
+    text("")
+    nlist = ["Feature"]
+    nlist.extend(fe_list)
+    Markdown_Style('Select The Target Feature :' , 2)
+
+    # Suggesting the type of problem (classification/Regression) 
+    text("")
+    target_feature = selectbox("", nlist)
+    if target_feature != "Feature":
+        typ, statem = set_target(df, target_feature)
+        info(statem)
+        if checkbox("Want to change the Problem Type (Classification / Regression)"):
+            if typ == "Regression":
+                typ = "Classification"
+                info("Changed successfully, Now its a " + typ + " Problem")
+            else:
+                typ = "Regression"
+                info("Changed successfully, Now its a " + typ + " Problem")
+
+
+    # Splitting the dataset into training and testing data
+    if target_feature != "Feature":
+        text("")
+        Markdown_Style("Let's Start Splitting The Dataset" , 2)
+        text("")
+
+        prcntage = 0.82
+        info("By default Percentage of Training Data is 82 %")
+        text("")
+        if checkbox("Select to Change Training Dataset Size"):
+            prcntage = slider('Select percentage',60, 86)
+            write("You selected : ", prcntage, "percent for training Dataset")
+            prcntage = prcntage/100
+        train, test = train_test_splitter(df, prcntage)
+
+        # Updated shape of training and testing data
+        text("")
+        Markdown_Style("Shape of the Training Dataset: "+ str(train.shape) , 1)
+        text("")
+        Markdown_Style("Shape of the Test Dataset:-  "+ str(test.shape) , 1)
+        text("")
+        text("")
+
+        x_train, x_test, y_train, y_test = x_y_maker(target_feature, train, test)
+        info("Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
+
+        text("")
+        text("")
+        x_list = [x_train, x_test]
+        y_list = [y_train, y_test]
+        mlists = []
+
+        # Taking the models from user which will be used for training
+        if typ == "Regression":
+            mlists = ['LinearRegression','RandomForestRegressor','AdaBoostRegressor','SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
+        else:
+            mlists = ['LogisticRegression','RandomForestClassifier','AdaBoostClassifier','SVC','MLPClassifier','DecisionTreeClassifier','XGBClassifier']
+        models_lists = multiselect("Select Models", mlists)
+        model_object = Models(x_list, y_list, typ,models_lists)
+        model_object.model_call()
+        extra = ["Select"]
+        extra.extend(models_lists)
+
+        # Predictions Downloader
+        if checkbox("Select to get Y_predictions of a model"):
+            selectd_models = selectbox("Select Model", extra)
+            if selectd_models != "Select":
+                y_pred = model_object.output(selectd_models)
+                y_pred = pd.DataFrame(y_pred)
+                dataframe(y_pred)
+                text("")
+                csv = y_pred.to_csv(index=False)
+                b64 = base64.b64encode(csv.encode()).decode()
+                href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+                markdown(href, unsafe_allow_html=True)
 
