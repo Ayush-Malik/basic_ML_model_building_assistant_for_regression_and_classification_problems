@@ -1,15 +1,19 @@
 from streamlit import *
 from main_app_functions import *
-# from PIL import Image
-
-markdown_style_sidebar = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
-markdown_style_h       = "font-size:30px; color:green; font-family: Brush Script MT;"
+import base64
 
 
+markdown_style_sidebar = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(0, 179, 60), rgb(0, 179, 134), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
+markdown_style_h1      = "font-size:40px; color:green; font-family: Brush Script MT;"
+markdown_style_h2      = "font-family: Georgia, Times, serif; font-size: 20px; font-style: italic; font-variant: normal; font-weight: 700; line-height: 15.4px; position:relative; left:30px; color:rgb(133, 51, 255)"
+
+
+set_option('deprecation.showfileUploaderEncoding', False)
 activities = ["Home", "EDA", "Model Building", "About Us"]	
 
-# sidebar.header("ML Automater")
+
 sidebar.markdown("<p style='" + markdown_style_sidebar +"' >" + "ML Automator" + "</p>", unsafe_allow_html=True)
+sidebar.text("")
 sidebar.text("")
 
 choice = sidebar.selectbox("Select Option",activities)
@@ -17,25 +21,43 @@ choice = sidebar.selectbox("Select Option",activities)
 for i in range(10):
     sidebar.text("") 
 
+def image_maker(image_name):
+    with open(image_name, "rb") as img_file:
+        my_string = base64.b64encode(img_file.read()).decode()
+        imigi = "<img style='position:relative; right:-20px; width:60px; height:60px; border-radius: 50%;' src='data:image/png;base64,{}' class='img-fluid'>".format(my_string)
+        return imigi
 
-sidebar.markdown("<a style = 'font-size : 25px; color : rgb(0 , 0 , 0); position: relative; left: 50px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems' target='_blank'>Git Hub link</a>", unsafe_allow_html=True)
+image1 = image_maker("git_icon.png")
+
+sidebar.markdown(
+    image1 + "<a style='font-size:20px; color:rgb(104, 96, 96); position:relative; left:30px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems' target='_blank'>Github Project link</a>", 
+    unsafe_allow_html=True
+    )
+sidebar.text("") 
+sidebar.text("")
+sidebar.text("")
+
+image2 = image_maker("my image.jpg")
+image3 = image_maker("ab_image.jfif")
+image4 = image_maker("ay_image.jfif")
+
+sidebar.markdown("<p style='" + markdown_style_h1 +"' >" + "Developed by : " + "</p>", unsafe_allow_html=True)
 sidebar.text("") 
 
-sidebar.markdown("<p style='" + markdown_style_h +"' >" + "Developed by : " + "</p>", unsafe_allow_html=True)
+sidebar.markdown(image4 + "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank'>Ayush Malik</a>", unsafe_allow_html=True)
 sidebar.text("") 
 
-sidebar.markdown("<a style = 'font-size : 25px; color : rgb(0 , 0 , 0); position: relative; left: 50px;'  href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank'>Ayush Malik{NOOB}</a>", unsafe_allow_html=True)
+sidebar.markdown(image3 + "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/abhay-dhiman-409378191/' target='_blank'>Abhay Dhiman</a>", unsafe_allow_html=True)
 sidebar.text("") 
 
-sidebar.markdown("<a style = 'font-size : 25px; color : rgb(0 , 0 , 0); position: relative; left: 50px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems' target='_blank'>Git Hub link</a>", unsafe_allow_html=True)
-sidebar.text("") 
+sidebar.markdown(image2 + "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/aaditya-singhal-a46720192/' target='_blank'>Aaditya Singhal</a>", unsafe_allow_html=True)
 
-sidebar.markdown("<a style = 'font-size : 25px; color : rgb(0 , 0 , 0); position: relative; left: 50px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems' target='_blank'>Git Hub link</a>", unsafe_allow_html=True)
-sidebar.text("") 
-# image = Image.open('git_icon.png')
-# sidebar.favicon( image ) 
+for i in range(10):
+    sidebar.text("") 
 
-set_option('deprecation.showfileUploaderEncoding', False)
+
+sidebar.markdown("<p>Made With ❤ @Pro_Coders</p>", unsafe_allow_html=True)
+
 
 if choice == "Home": # For Navigating to Home Page
     Home()
