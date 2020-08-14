@@ -10,3 +10,6 @@ if choice == "Home": # For Navigating to Home Page
 
 elif choice == "EDA": # For Navigating to EDA Page
     EDA()
+
+elif choice == 'Model Building': # For Navigating to Model Building page
+    Model_Builder()
