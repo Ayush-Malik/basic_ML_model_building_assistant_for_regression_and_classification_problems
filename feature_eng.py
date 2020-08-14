@@ -104,7 +104,7 @@ def two_cat_comparator( lis_of_feat , df ):
     type_1 , type_2  = lis_of_feat[0] , lis_of_feat[1]
     dic = {}
     unique_len_1 = len(df[type_1].value_counts())
-    unique_len_2 = len(df[type_1].value_counts())
+    unique_len_2 = len(df[type_2].value_counts())
     
     if unique_len_1 > 20 or unique_len_2 > 20:
         for cat_1 in df[type_1].value_counts().index:
