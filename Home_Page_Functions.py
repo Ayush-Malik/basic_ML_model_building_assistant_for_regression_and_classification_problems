@@ -6,12 +6,13 @@ import base64
 #############################################################################################################################################################################################
 
 
-# Markdown Styles
-markdown_style1 = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
-markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
-markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
 
 def Markdown_Style(value , type = 1):
+    # Markdown Styles
+    markdown_style1 = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
+    markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
+    markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
+
     if type == 1:
         style_type = markdown_style1
 
@@ -102,11 +103,11 @@ def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , sub_hea
 
         if select_box_text_type_1 is not None: # Single Checkbox
 
-            categorical_feature = selectbox( select_box_text_type_1 , drop_down_list)
+            categorical_feature = selectbox( select_box_text_type_1 , drop_down_list , key = 183737487)
 
             if categorical_feature != drop_down_list[0]:
                 unique_len = len(df[categorical_feature].value_counts())
-                if unique_len > 7:
+                if unique_len > 15:
                     dataframe(df[categorical_feature].value_counts())
                     Markdown_Style("Total unique values : " + str(unique_len) , 1)
                 elif plot_type == 'pie_chart':
@@ -114,16 +115,38 @@ def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , sub_hea
                     plotly_chart(percent_pie)
 
         elif select_box_text_type_2 is not None: # Two Checkboxes
+            
+            drop_down_list[0] = "Choose the First Feature"
+            first_one           = drop_down_list
 
-            categorical1 = selectbox( select_box_text_type_2[0] , drop_down_list )
-            categorical2 = selectbox( select_box_text_type_2[1] , drop_down_list )
+            categorical1 = selectbox( select_box_text_type_2[0] , first_one , key = 9929389 )
 
-            if (categorical1 != drop_down_list[0])  and  (categorical2 != drop_down_list[0]):
-                cat_lis          = [categorical1, categorical2] 
+            if categorical1 != drop_down_list[0]: # 2nd selectbox will appear only when 1st is already selected---selectbox -> 1 
+                
+                drop_down_list[0] = "Choose the Second Feature"
+                second_one           = drop_down_list
+                second_one.remove(categorical1)
 
-                if plot_type == 'comparison_plot':
+                categorical2 = selectbox( select_box_text_type_2[1] , second_one ) # ---selectbox -> 2
+
+                if categorical2 != drop_down_list[0]:
+                    cat_lis          = [categorical1, categorical2] 
                     comparison_plot  = two_cat_comparator( cat_lis , df )
-                    plotly_chart(comparison_plot)
+
+
+
+                    if plot_type == 'comparison_plot':
+                        try:
+                            plotly_chart(comparison_plot)
+                        except:
+                            dataframe(comparison_plot)
+                            text("")
+                            info( "x-axis--> "+ categorical1 + ", y-axis--> " + categorical2 )
+                            
+                        
+    text("")
+    text("")
+    text("")
 
 
 #############################################################################################################################################################################################
@@ -136,11 +159,14 @@ def feature_dropper(df):
     markdown_type_1 = "Select the feature to be dropped : "
     Markdown_Style(markdown_type_1 , 2)
     missing_lis = missing_value_lis(df)
-    lis_drop = multiselect("Select Feature", missing_lis) 
+    lis_drop = multiselect("", missing_lis) 
     feature_tracker, sent = drop_feat(df, lis_drop)
     if lis_drop != []:
         success(sent)
+    text("")
+    text("")
     return feature_tracker
+
 
 
 #############################################################################################################################################################################################
