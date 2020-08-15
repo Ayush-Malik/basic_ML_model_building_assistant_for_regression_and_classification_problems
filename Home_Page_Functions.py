@@ -220,23 +220,23 @@ def useless_features_manager(df):
         Markdown_Style("Useless Features :" , type = 2)
         write("The features which have high unique values are:")
         usl_df = useless_feat(df)
-        write(usl_df)
-        text("")
-        flag = 0
-        for feature in usl_df["Feature"]:
-            if checkbox('Select to drop ' +  feature):
-                drop_useless_feat(df, feature)
-                success("Feature Dropped Successfully")
-                flag += 1
-        text("")
-        text("")
-        return flag
+        if len(usl_df) != 0:
+            write(usl_df)
+            text("")
+            for feature in usl_df["Feature"]:
+                if checkbox('Select to drop ' +  feature):
+                    drop_useless_feat(df, feature)
+                    success("Feature Dropped Successfully")
+            text("")
+            text("")
+        else:
+            info("There are no useless Features in dataset")
 
 
 #############################################################################################################################################################################################
 
 
-def final_summary_provider(df , flag):
+def final_summary_provider(df):
         if button("Click if All done"):
             subheader("After Doing all of the above Feature Engineering The dataset is now as below")
             text("")
