@@ -9,22 +9,30 @@ import base64
 
 def Markdown_Style(value , type = 1):
     # Markdown Styles
-    markdown_style1 = "position: relative; left: 50px; font-size:30px; color:grey; font-family: Brush Script MT;"
-    markdown_style2 = "position: relative; font-size:30px; color:brown; font-family: Algerian;"
-    markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(184, 48, 184), rgb(59, 9, 95), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
-
+    length = len(value)
+    link = "<link href='https://fonts.googleapis.com/css?family=Anton' rel='stylesheet'>"
+    link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
+    markdown_style1 = "position: relative; left: 50px; font-size:24px; color:rgb(14,179,83); font-family: Lato, sans-serif;"
+    markdown_style2 =  "position:relative; font-family:Anton; font-size: 33px;border-radius: 25px;border: 8px solid grey;padding: 20px;width: "+str(length*20)+"px;height: 100px;text-align:center;"
+    markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, #7c0909, #09477c, green); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
     if type == 1:
         style_type = markdown_style1
+        markdown(link2 + "<p style='" + style_type +
+            "' >" + value + "</p>", unsafe_allow_html=True)
 
     elif type == 2:
+        value = value.upper()
         style_type = markdown_style2
+        markdown(link + "<p style='" + style_type +
+            "' >" + value + "</p>", unsafe_allow_html=True)
     
     elif type == 3:
         style_type = markdown_style3
-
-
-    markdown("<p style='" + style_type +
+        value = value.upper()
+        markdown(link + "<p style='" + style_type +
             "' >" + value + "</p>", unsafe_allow_html=True)
+
+
 
 
 #############################################################################################################################################################################################
