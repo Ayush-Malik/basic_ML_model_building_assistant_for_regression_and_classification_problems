@@ -80,9 +80,7 @@ class Models:
         
         else:
             # For calling respective functions according to the model_list
-            text("")
-            success("Working On It! Please Wait For a While")
-            text("")
+            #success("Working On It! Please Wait For a While")
             text("")
             
             for model_name in self.model_list:
