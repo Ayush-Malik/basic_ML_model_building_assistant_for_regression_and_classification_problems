@@ -31,7 +31,7 @@ def image_maker(image_name):
 image1 = image_maker("git_icon.png")
 
 sidebar.markdown(
-    image1 + "<a style='font-size:20px; color:rgb(104, 96, 96); position:relative; left:30px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems' target='_blank'>Github Project link</a>", 
+    image1 + "<a style='font-size:20px; color:rgb(104, 96, 96); position:relative; left:30px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/streamlit_autoML' target='_blank'>Github Project link</a>", 
     unsafe_allow_html=True
     )
 sidebar.text("") 
