@@ -315,10 +315,6 @@ elif choice == "Model Building": # For Navigating to Home Page
                 b64 = base64.b64encode(csv.encode()).decode()
                 href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
                 markdown(href, unsafe_allow_html=True)
-# Useless Features:-
+
 # null values, -ve msle (model training)
-# issue number 1st
-# model training me categorical feature k head k baad shape show krne h
-# update vali file delete krne h
 # working on it show tab krna h jab user kisi model ko select kre
-# sidebar pr website ka name bhi show krna tha jhalle
