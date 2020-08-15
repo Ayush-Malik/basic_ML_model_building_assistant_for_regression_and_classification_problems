@@ -1,11 +1,12 @@
 from streamlit import *
 from main_app_functions import *
 import base64
+import os
 
 
 link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
 markdown_style_sidebar = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(0, 179, 60), rgb(0, 179, 134), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
-markdown_style_h1      = "font-size:40px; color:green; font-family: lato, sans-serif;"
+markdown_style_h1      = "font-size:40px; color:black; font-family: lato, sans-serif;"
 markdown_style_h2      = "font-family: lato, sans-serif; font-size: 20px; font-variant: normal; font-weight: 700; line-height: 15.4px; position:relative; left:30px; color:grey"
 
 
@@ -68,3 +69,6 @@ elif choice == "EDA": # For Navigating to EDA Page
 
 elif choice == 'Model Building': # For Navigating to Model Building page
     Model_Builder()
+
+elif choice == 'About Us': # For Navigating to About Us Page
+    About_Us()
