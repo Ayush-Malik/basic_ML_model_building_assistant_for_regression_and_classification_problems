@@ -8,6 +8,7 @@ py.init_notebook_mode(connected=True)
 import plotly.graph_objs as go
 import plotly.tools as tls
 import plotly.express as px
+import plotly.figure_factory as ff
 
 import cufflinks as cf
 cf.go_offline()
@@ -31,12 +32,16 @@ def num_num(df):
 # --> This particular function accepts a list with selected categorical features and returns a correlation heatmap
 def correlation_heatmap(df , selected_features):
     # for example selected_features = ['Age' , 'Fare' , 'Survived'] , This will produce a correlation heatmap of 3x3
-    data = np.array( df[ selected_features ].corr() )
-    fig = px.imshow(data,
-                    labels=dict( color = "Correlation"),
-                    x=  selected_features,
-                    y = selected_features
-                )
+    correlation_matrix = np.array( df[ selected_features ].corr() )
+
+    fig = ff.create_annotated_heatmap( z = correlation_matrix , annotation_text =np.around(correlation_matrix , decimals=2) , colorscale='Rainbow',
+                                  hoverinfo='z' , x = selected_features , y = selected_features )
+
+    # Make text size smaller
+    for i in range(len(fig.layout.annotations)):
+        fig.layout.annotations[i].font.size = 15
+
+
     return fig
 
 
