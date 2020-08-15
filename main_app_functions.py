@@ -5,6 +5,11 @@ from EDA_Page_Functions import *
 # Extra
 from models import *
 
+markdown("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'>\
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js></script>\
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js'></script>\
+  <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>", unsafe_allow_html=True)
+
 #############################################################################################################################################################################################
 def Home():
     Markdown_Style("Feature Engineering" , 3)
@@ -83,10 +88,10 @@ def Home():
         missing_values_filling_system(df , feature_tracker)
 
         # Useless features management system
-        flag = useless_features_manager(df)
+        useless_features_manager(df)
 
         # final summary provider
-        final_summary_provider(df , flag)
+        final_summary_provider(df)
 
 
 #############################################################################################################################################################################################
@@ -145,6 +150,7 @@ def Model_Builder():
     info("After converting Categorical Features into Numerical Ones, The current dataset is")
     dataframe(df.head())
     text("")
+    Markdown_Style("Shape of the Dataframe " + str(df.shape), 1)
 
     # Getting the target feature from the user 
     text("")
@@ -230,3 +236,65 @@ def Model_Builder():
                 href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
                 markdown(href, unsafe_allow_html=True)
 
+#############################################################################################################################################################################################
+def name_styler(name):
+    name = "<h2 style='color:rgb(44, 52, 84);font-size:34px;font-weight:800'><u>" + name + "</u></h2>"
+    return name
+
+def image_maker(image_name):
+    with open(image_name, "rb") as img_file:
+        my_string = base64.b64encode(img_file.read()).decode()
+        imigi = "<img style='height400px;' src='data:image/png;base64,{}' class='img-fluid'>".format(my_string)
+        return imigi
+
+def About_Us():
+    Markdown_Style("about the website", 2)
+    text("")
+    text("")
+
+    # Info About Web App
+    markdown("<p style='margin-left:30px;'>Our site provides Feature Engineering Tools, Expolaratory Data Analalysis, Machine learning model building and training in a very easy and automated way.\
+        It's Basically a web app built using Streamlit module that provides effective solution to most of the machine learning usecases. It actually takes the dataset from user and based on \
+        user interest it first does the Feature Engineering and after that user can do EDA and after doing all that user can start building model building.<br> <b><i>Note :-Currently It only provides the solution for Classification and Regression Problem</i></b></p>", unsafe_allow_html=True)
+    text("")
+    text("")
+
+    Markdown_Style("about the developers", 2)
+    text("")
+    text("")
+
+    # About 1st Developer --- Ayush Malik            
+    image1 = image_maker("ayush_about.jpeg")
+    markdown("<div class='card' style='width:370px'>"\
+    + image1 + \
+    "<div style='background-color:#a6f5dd' class='card-body'>"\
+      + name_styler('Ayush Malik') +\
+      "<p class='card-text'>ML Entusiast | Python & Django Developer | Jmitian</p>\
+      <a href='https://www.linkedin.com/in/ayush-malik-2252b7199/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
+    <a href='https://github.com/Ayush-Malik' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
+    </div>\
+    </div>", unsafe_allow_html=True)
+
+    # About 2nd Developer --- Abhay Dhiman
+    image2 = image_maker("abhay_about.jpeg")
+    markdown("<div  class='card' style='width:370px; margin-left:400px; '>"\
+    + image2 + \
+    "<div style='background-color:#a6f5dd' class='card-body'>"\
+      + name_styler('Abhay Dhiman') +\
+      "<p class='card-text'>ML & Deep Learning Entusiast | Python Developer | Jmitian</p>\
+      <a href='https://www.linkedin.com/in/abhay-dhiman-409378191/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
+    <a href='https://github.com/abhaydhiman' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
+    </div>\
+    </div>", unsafe_allow_html=True)
+
+    # About 3rd Developer --- Aaditya Singhal
+    image3 = image_maker("my image.jpg")
+    markdown("<div  class='card' style='width:370px;'>"\
+    + image3 + \
+    "<div style='background-color:#a6f5dd' class='card-body'>"\
+      + name_styler('Aaditya Singhal') +\
+      "<p class='card-text'>ML & Deep Learning Entusiast | Python & flask Developer | Jmitian</p>\
+      <a href='https://www.linkedin.com/in/aaditya-singhal-a46720192/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
+    <a href='https://github.com/Aaditya1978' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
+    </div>\
+    </div>", unsafe_allow_html=True)
