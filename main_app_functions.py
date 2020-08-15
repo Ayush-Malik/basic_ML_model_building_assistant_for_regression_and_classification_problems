@@ -10,7 +10,7 @@ def Home():
     Markdown_Style("Feature Engineering" , 3)
     text("")
     text("")
-    Markdown_Style("Upload the dataset!!!" , 2)
+    Markdown_Style("UPLOAD THE DATASET !!!" , 2)
 
     data = file_uploader("" , type=["csv"]) # Loading the dataset
 
@@ -98,17 +98,26 @@ def EDA():
     text("")
     df = pd.read_csv('update.csv')
     dataframe(df.head())
+    text("")
+    text("")
 
     # Heatmap 
+    Markdown_Style('Correlation Heatmaps' , 2)
     EDA_heatmap(df)
+    text("")
 
     # Boxplot
+    Markdown_Style('box type plot' , 2)
     EDA_boxplot(df)
+    text("")
 
     # Histogram
+    Markdown_Style('histogram plot' , 2)
     EDA_histogram(df)
+    text("")
 
     # Sunburst
+    Markdown_Style('Sun Burst Plot' , 2)
     EDA_sunburst(df)
 
 
@@ -191,6 +200,9 @@ def Model_Builder():
         mlists = []
 
         # Taking the models from user which will be used for training
+        text("")
+        Markdown_Style("Let's Start Model Training", 2)
+        text("")
         if typ == "Regression":
             mlists = ['LinearRegression','RandomForestRegressor','AdaBoostRegressor','SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
         else:
@@ -202,6 +214,10 @@ def Model_Builder():
         extra.extend(models_lists)
 
         # Predictions Downloader
+        text("")
+        text("")
+        Markdown_Style("Y_Pred Dataset Downloader", 2)
+        text("")
         if checkbox("Select to get Y_predictions of a model"):
             selectd_models = selectbox("Select Model", extra)
             if selectd_models != "Select":
