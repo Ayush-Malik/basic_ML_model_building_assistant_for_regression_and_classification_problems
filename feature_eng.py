@@ -11,11 +11,14 @@ import plotly.express as px
 import cufflinks as cf
 cf.go_offline()
 
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
 def type_of_feature(df):
 
-    dic = dict(df.dtypes)
-    dic = pd.DataFrame(dic.items(), columns = ["Features", "Dtypes"]).set_index("Features")
-    return(dic)
+    new_df = dict(df.dtypes)
+    new_df = pd.DataFrame(new_df.items(), columns = ["Features", "Dtypes"]).set_index("Features")
+    return(new_df)
 
 def null_value(df):
     # Null values management system (^_^)
@@ -177,3 +180,74 @@ def useless_feat(df):
 def drop_useless_feat(df, feature):
     df.drop([feature], axis = 1, inplace = True)
 
+
+
+# subplot makes for table + piechart which will be used in value counter
+
+def suplots_maker_for_table_and_piechart(df):
+
+    type_of_feat_df = type_of_feature(df)
+
+    dic = {}
+    for val in type_of_feat_df.groupby('Dtypes'):
+        dic[ str(val[0]) ] =  len(val[1]) 
+    
+
+    headerColor = 'grey'
+    rowEvenColor = 'lightgrey'
+    rowOddColor = 'white'
+
+    colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+
+    new_df = type_of_feature(df).reset_index()
+    
+    A = []
+    B = []
+    for val in new_df.values:
+        A.append(str(val[0]).upper())
+        B.append(str(val[1]))
+        
+    # trace for table , here extra parameters are just to provide style
+    trace_table = go.Table(
+                            columnorder = [2,5],
+                            columnwidth = [1 , 1],
+                            header=dict(
+                                values=['Feature', 'Dtype'],
+                                line_color='darkslategray',
+                                fill_color=headerColor,
+                                align=['left','center'],
+                                font=dict(color='white', size=15)
+                            ),
+                            cells=dict(
+                                values= [A , B],
+                                line_color='darkslategray',
+                                # 2-D list of colors for alternating rows
+                                fill_color = [[rowOddColor,rowEvenColor,rowOddColor, rowEvenColor,rowOddColor]*5],
+                                align = ['left', 'center'],
+                                font = dict(color = 'darkslategray', size = 13.5)
+                                ))
+
+   
+    labels = list( dic.keys() )
+    values = list( dic.values() )
+    trace_piechart = go.Pie(labels=labels, values=values)
+
+    # trace for pie_chart , here extra parameters are just to provide style
+    trace_piechart = go.Pie(labels =  labels,
+                values = values ,  hoverinfo='label+percent', textinfo='value', textfont_size=20,
+                  marker=dict(colors=colors, line=dict(color='#000000', width=3)) )
+
+
+    # Merging the given traces[trace_table , trace_pie_chart] using make_subplots
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "Table"}, {"type": "pie"}]])
+    fig.add_trace(trace_table, row=1, col=1)
+    fig.add_trace(trace_piechart, row=1, col=2)
+
+    # Updating the size of figure
+    fig.update_layout(
+    autosize=False,
+    width =  1000,
+    height = 460)
+
+
+    return fig
