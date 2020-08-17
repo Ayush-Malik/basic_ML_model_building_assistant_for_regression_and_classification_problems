@@ -264,7 +264,7 @@ def About_Us():
     # Info About Web App
     markdown("<p style='margin-left:30px;'>Our site provides Feature Engineering Tools, Expolaratory Data Analalysis, Machine learning model building and training in a very easy and automated way.\
         It's Basically a web app built using Streamlit module that provides effective solution to most of the machine learning usecases. It actually takes the dataset from user and based on \
-        user interest it first does the Feature Engineering and after that user can do EDA and after doing all that user can start building model building.<br> <b><i>Note :-Currently It only provides the solution for Classification and Regression Problem</i></b></p>", unsafe_allow_html=True)
+        user interest it first does the Data Preprocessing and after that user can do EDA and after doing all that user can start building model building.<br> <b><i>Note :-Currently It only provides the solution for Classification and Regression Problem</i></b></p>", unsafe_allow_html=True)
     text("")
     text("")
 

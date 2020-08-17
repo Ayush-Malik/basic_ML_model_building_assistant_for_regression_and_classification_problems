@@ -72,7 +72,7 @@ def imbalanced_feature(df):
             categorical_features.append(val)
             
 
-    print(categorical_features)
+    # print(categorical_features)
 
 
     imbalanced_features = []
