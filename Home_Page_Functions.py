@@ -187,7 +187,13 @@ def missing_values_filling_system(df , feature_tracker):
     count = 0
     for feature in feature_tracker:
         if checkbox(feature):
-            strategy = selectbox("Choose strategy", ["strategy","mean", "median", "mode"], key = count)
+            if df.dtypes[feature] == 'object':
+                stratigies_lis = ["strategy" ,  "mode"]
+            else:
+                stratigies_lis = ["strategy","mean", "median"]
+                 
+
+            strategy = selectbox("Choose strategy", stratigies_lis , key = count)
             if strategy != "strategy":
                 lis_fill.append(strategy)
                 feature_ch.append(feature)
