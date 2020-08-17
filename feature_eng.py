@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
 
 import plotly.offline as py
 py.init_notebook_mode(connected=True)
@@ -47,10 +46,9 @@ def null_value(df):
 
     return(missing_values_count)
 
-def heatmap_generator(data, yticklabel=False, cbar_value=False):
+def heatmap_generator(df , coloraxis_val = False ):
     '''
     Generates heatmap plot according to the data received;
-    yticklabel:- defaults False but also can take values True to display all y labels and "auto" to display values automatically.
     cbar_value:- default is False but can also takes True as input to show cbar of heatmap.
     
     Example
@@ -58,7 +56,11 @@ def heatmap_generator(data, yticklabel=False, cbar_value=False):
     >>> heatmap_generator(df.isnull())
     >>> plots heatmap to display all null values in the dataset.
     '''
-    return(sns.heatmap(data, yticklabels = yticklabel, cbar = cbar_value))
+    
+    fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
+    fig.layout.coloraxis.showscale = coloraxis_val
+    fig.layout
+    return fig
 
 def imbalanced_feature(df):
     dic = dict(df.dtypes)
