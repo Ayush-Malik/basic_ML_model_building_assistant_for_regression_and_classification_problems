@@ -247,7 +247,7 @@ def suplots_maker_for_table_and_piechart(df):
     fig.update_layout(
     autosize=False,
     width =  1000,
-    height = 460)
+    height = 470)
 
 
     return fig
