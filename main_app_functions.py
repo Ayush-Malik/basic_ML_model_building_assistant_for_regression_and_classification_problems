@@ -12,7 +12,7 @@ markdown("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap
 
 #############################################################################################################################################################################################
 def Home():
-    Markdown_Style("Feature Engineering" , 3)
+    Markdown_Style("Data Preprocessing" , 3)
     text("")
     text("")
     Markdown_Style("UPLOAD THE DATASET !!!" , 2)
@@ -60,6 +60,7 @@ def Home():
         new_cat.extend(categorical)
 
         # Pie chart for value_counts of a particular feature
+        #________________________________________________________________________
         checkbox_text           = "Show value count of a Categorical feature"
         drop_down_list          =  new_cat
         select_box_text_type_1  = ""
@@ -71,6 +72,8 @@ def Home():
                           plot_type = 'pie_chart', 
                           markdown_type_2 = markdown_type_2 , 
                           select_box_text_type_1 = select_box_text_type_1  )
+        #________________________________________________________________________
+        
 
         # Two categorical features comparator
 
@@ -97,8 +100,7 @@ def Home():
         useless_features_manager(df)
 
         # final summary provider
-        if (len(useless_feat(df)) == 0) and (sum(df.isnull().sum()) == 0) : # final summary will be provided only when there's no useless features and no null values in the dataframe
-            final_summary_provider(df)
+        final_summary_provider(df)
 
 
 #############################################################################################################################################################################################
