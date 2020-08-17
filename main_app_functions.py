@@ -32,10 +32,14 @@ def Home():
         markdown_type_1 = "Shape of the Dataset : " + str(df.shape)
         Cool_Data_Printer( markdown_type_1 = markdown_type_1 )
        
-        # DataTypes of different features of df
-        markdown_type_2 = "Categories of Features : "
-        Cool_Data_Printer(markdown_type_2 = markdown_type_2 , write_this = type_of_feature(df))
 
+        # Features Overview provider --> This function provides a table showing datatype of all features + a pie chart showing %age of numerical and categorical features
+        markdown_type_2 = "Categories of Features : "
+        Cool_Data_Printer(markdown_type_2 = markdown_type_2 )
+        plot = features_overview_provider(df)
+        plotly_chart( plot )
+
+    
         # Missing values counter
         markdown_type_2 = "The Missing Values and Strategey :"
         Cool_Data_Printer(markdown_type_2 = markdown_type_2 , write_this = null_value(df))
