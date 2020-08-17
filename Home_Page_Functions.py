@@ -243,23 +243,26 @@ def useless_features_manager(df):
 
 
 def final_summary_provider(df):
-        if button("Click if All done"):
-            subheader("After Doing all of the above Feature Engineering The dataset is now as below")
-            text("")
-            dataframe(df.head())
 
-            text("")
-            write("There are now no null values and also there are no Imbalanced or useless Features")
+    markdown("____________________________________________________________________________")
+    header("After Doing all of the above Feature Engineering The dataset is now as below" )
+    markdown("____________________________________________________________________________")
 
-            text("")
-            success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
+    text("")
+    dataframe(df.head())
 
-            text("")
-            balloons()
-        info("To download this updated dataset click the link below")
-        csv = df.to_csv(index=False)
-        b64 = base64.b64encode(csv.encode()).decode()
-        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
-        markdown(href, unsafe_allow_html=True)
-        df.to_csv("update.csv",index=False)
+    text("")
+    write("There are now no null values and also there are no Imbalanced or useless Features")
+
+    text("")
+    success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
+
+    text("")
+    balloons()
+    info("To download this updated dataset click the link below")
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+    markdown(href, unsafe_allow_html=True)
+    df.to_csv("update.csv",index=False)
 
