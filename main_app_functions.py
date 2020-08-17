@@ -223,21 +223,22 @@ def Model_Builder():
         extra.extend(models_lists)
 
         # Predictions Downloader
-        text("")
-        text("")
-        Markdown_Style("Y_Pred Dataset Downloader", 2)
-        text("")
-        if checkbox("Select to get Y_predictions of a model"):
-            selectd_models = selectbox("Select Model", extra)
-            if selectd_models != "Select":
-                y_pred = model_object.output(selectd_models)
-                y_pred = pd.DataFrame(y_pred)
-                dataframe(y_pred)
-                text("")
-                csv = y_pred.to_csv(index=False)
-                b64 = base64.b64encode(csv.encode()).decode()
-                href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
-                markdown(href, unsafe_allow_html=True)
+        if models_lists != []: # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
+            text("")
+            text("")
+            Markdown_Style("Y_Pred Dataset Downloader", 2)
+            text("")
+            if checkbox("Select to get Y_predictions of a model"):
+                selectd_models = selectbox("Select Model", extra)
+                if selectd_models != "Select":
+                    y_pred = model_object.output(selectd_models)
+                    y_pred = pd.DataFrame(y_pred)
+                    dataframe(y_pred)
+                    text("")
+                    csv = y_pred.to_csv(index=False)
+                    b64 = base64.b64encode(csv.encode()).decode()
+                    href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+                    markdown(href, unsafe_allow_html=True)
 
 #############################################################################################################################################################################################
 def name_styler(name):
