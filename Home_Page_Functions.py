@@ -119,8 +119,9 @@ def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , sub_hea
                     dataframe(df[categorical_feature].value_counts())
                     Markdown_Style("Total unique values : " + str(unique_len) , 1)
                 elif plot_type == 'pie_chart':
-                    percent_pie = prcntage_values( categorical_feature, df)
-                    plotly_chart(percent_pie)
+                    # percent_pie = prcntage_values( categorical_feature, df)
+                    fig = suplots_maker_for_table_and_piechart(df , type_null = True , feature = categorical_feature )
+                    plotly_chart(fig)
 
         elif select_box_text_type_2 is not None: # Two Checkboxes
             
@@ -207,7 +208,7 @@ def missing_values_filling_system(df , feature_tracker):
 #############################################################################################################################################################################################
 
 def features_overview_provider(df):
-    fig = suplots_maker_for_table_and_piechart(df)
+    fig = suplots_maker_for_table_and_piechart(df , type_null = False , feature = None)
     return fig
 
 #############################################################################################################################################################################################
@@ -233,12 +234,24 @@ def useless_features_manager(df):
         write("The features which have high unique values are:")
         usl_df = useless_feat(df)
         if len(usl_df) != 0:
-            write(usl_df)
             text("")
+            lis = []
             for feature in usl_df["Feature"]:
                 if checkbox('Select to drop ' +  feature):
                     drop_useless_feat(df, feature)
+                    lis.append(feature)
                     success("Feature Dropped Successfully")
+
+
+            new = list(usl_df['Feature'])
+            for val in lis:
+               new.remove(val)
+            usl_df = usl_df[ usl_df['Feature'].isin(new) ].reset_index().drop('index' , axis = 1)
+            
+
+            if len(usl_df) != 0:
+                write("Useless Features present in DataFrame : ")
+                write(usl_df)
             text("")
             text("")
         else:
@@ -251,20 +264,21 @@ def useless_features_manager(df):
 def final_summary_provider(df):
 
     markdown("____________________________________________________________________________")
-    header("After Doing all of the above Feature Engineering The dataset is now as below" )
+    header("After Doing the Feature Engineering The dataset is now as below")
     markdown("____________________________________________________________________________")
 
     text("")
     dataframe(df.head())
 
-    text("")
-    write("There are now no null values and also there are no Imbalanced or useless Features")
+    if sum(df.isnull().sum()) == 0:
+        text("")
+        success("Congrats Data Preprocessing phase is Done 🎉🎉. Now You can move on to next part, i.e , Doing EDA")
+
+
+    # text("")
+    # success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
 
     text("")
-    success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
-
-    text("")
-    balloons()
     info("To download this updated dataset click the link below")
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()
