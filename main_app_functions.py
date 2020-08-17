@@ -97,7 +97,8 @@ def Home():
         useless_features_manager(df)
 
         # final summary provider
-        final_summary_provider(df)
+        if (len(useless_feat(df)) == 0) and (sum(df.isnull().sum()) == 0) : # final summary will be provided only when there's no useless features and no null values in the dataframe
+            final_summary_provider(df)
 
 
 #############################################################################################################################################################################################
