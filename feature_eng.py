@@ -186,58 +186,91 @@ def drop_useless_feat(df, feature):
 
 # subplot makes for table + piechart which will be used in value counter
 
-def suplots_maker_for_table_and_piechart(df):
+def suplots_maker_for_table_and_piechart(df , type_null , feature = None):
+#-------------------------------------------------------------------------------------------------------
+    # Here we are using basically 4 variables , 2 for table and 2 for pie chart
+    # 1 Table variables --> headers , value_lis_for_table
+                        # headers is basically 1d list --> example --> ['Category' , 'Count']
+                        # value_lis_for_table is like given example below :
+                                            # [['S' , 'C' , 'Q'] , [644 , 168 , 77]]
+    # 2 Pie Chart --> labels , values
+                        # labels is basically a 1d list --> example --> ['S' , 'C' , 'Q']
+                        # vlaues is basically a 1d list --> example --> [644 , 168 , 77]
+#-------------------------------------------------------------------------------------------------------
 
-    type_of_feat_df = type_of_feature(df)
-
-    dic = {}
-    for val in type_of_feat_df.groupby('Dtypes'):
-        dic[ str(val[0]) ] =  len(val[1]) 
-    
 
     headerColor = 'grey'
     rowEvenColor = 'lightgrey'
     rowOddColor = 'white'
 
-    colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']
+    if type_null == True:
+        dic = dict(df[feature].value_counts()) 
 
-    new_df = type_of_feature(df).reset_index()
-    
-    A = []
-    B = []
-    for val in new_df.values:
-        A.append(str(val[0]).upper())
-        B.append(str(val[1]))
         
+        # Table parameters --> headers , value_lis_for_table
+        headers = ['Category' , 'Count']
+        value_lis_for_table = [list( dic.keys() ) ,list( dic.values() ) ]
+
+        # Pie Chart parameters --> labels and values
+        labels = value_lis_for_table[0]
+        values = value_lis_for_table[1]
+
+        
+
+    else:
+        # Table parameters --> headers , value_lis_for_table
+        headers = ['Feature', 'Dtype']
+        type_of_feat_df = type_of_feature(df)
+
+        dic = {}
+        for val in type_of_feat_df.groupby('Dtypes'):
+            dic[ str(val[0]) ] =  len(val[1]) 
+        
+        new_df = type_of_feature(df).reset_index()
+
+        
+        A = []
+        B = []
+        for val in new_df.values:
+            A.append(str(val[0]).upper())
+            B.append(str(val[1]))
+
+        value_lis_for_table = [A , B]
+
+        # Pie Chart parameters --> labels and values
+        labels = list( dic.keys() )
+        values = list( dic.values() )
+
+
     # trace for table , here extra parameters are just to provide style
     trace_table = go.Table(
                             columnorder = [2,5],
                             columnwidth = [1 , 1],
                             header=dict(
-                                values=['Feature', 'Dtype'],
+                                values = headers,
                                 line_color='darkslategray',
                                 fill_color=headerColor,
                                 align=['left','center'],
                                 font=dict(color='white', size=15)
                             ),
                             cells=dict(
-                                values= [A , B],
+                                values= value_lis_for_table,
                                 line_color='darkslategray',
                                 # 2-D list of colors for alternating rows
-                                fill_color = [[rowOddColor,rowEvenColor,rowOddColor, rowEvenColor,rowOddColor]*5],
+                                # fill_color = [[rowOddColor , rowEvenColor , rowOddColor]*50],
+                                fill_color = [[  rowEvenColor*(i%2 != 0) + rowOddColor*(i%2 == 0) for i in range(len( value_lis_for_table[0] ))  ]] , 
                                 align = ['left', 'center'],
                                 font = dict(color = 'darkslategray', size = 13.5)
                                 ))
 
    
-    labels = list( dic.keys() )
-    values = list( dic.values() )
+
     trace_piechart = go.Pie(labels=labels, values=values)
 
     # trace for pie_chart , here extra parameters are just to provide style
-    trace_piechart = go.Pie(labels =  labels,
-                values = values ,  hoverinfo='label+percent', textinfo='value', textfont_size=20,
-                  marker=dict(colors=colors, line=dict(color='#000000', width=3)) )
+    trace_piechart = go.Pie(labels =  labels ,
+                  values = values ,  hoverinfo='label+percent', textinfo='value', textfont_size=20 ,
+                  marker=dict( line=dict(color='#000000', width=3)) )
 
 
     # Merging the given traces[trace_table , trace_pie_chart] using make_subplots
