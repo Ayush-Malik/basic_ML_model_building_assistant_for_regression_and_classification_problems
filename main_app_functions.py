@@ -107,9 +107,7 @@ def Home():
 
         
 def EDA():
-    Markdown_Style('Exploratory data analysis' , 3)
-    text("")
-    text("")
+
     df = pd.read_csv('update.csv')
     dataframe(df.head())
     text("")
@@ -139,10 +137,6 @@ def EDA():
 
 
 def Model_Builder():
-    Markdown_Style('Model Building And Training' , 3)
-
-    text("")
-    text("")
 
     # Loading the updated dataset which ready for model
     df = pd.read_csv('update.csv')
