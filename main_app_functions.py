@@ -219,9 +219,9 @@ def Model_Builder():
         Markdown_Style("Let's Start Model Training", 2)
         text("")
         if typ == "Regression":
-            mlists = ['LinearRegression','RandomForestRegressor','AdaBoostRegressor','SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
+            mlists = ['LinearRegression','RandomForestRegressor', 'SVR','MLPRegressor','DecisionTreeRegressor','XGBRegressor']
         else:
-            mlists = ['LogisticRegression','RandomForestClassifier','AdaBoostClassifier','SVC','MLPClassifier','DecisionTreeClassifier','XGBClassifier']
+            mlists = ['LogisticRegression','RandomForestClassifier', 'SVC','MLPClassifier','DecisionTreeClassifier','XGBClassifier']
         models_lists = multiselect("Select Models", mlists)
         model_object = Models(x_list, y_list, typ,models_lists)
         model_object.model_call()

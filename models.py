@@ -1,5 +1,5 @@
 from sklearn.naive_bayes import MultinomialNB, GaussianNB
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, AdaBoostClassifier, AdaBoostRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.svm import SVC, SVR
 from sklearn.neural_network import MLPClassifier, MLPRegressor, multilayer_perceptron
@@ -13,7 +13,6 @@ models_mapper = {
     # Regressors
     'LinearRegression': LinearRegression(),
     'RandomForestRegressor': RandomForestRegressor(),
-    'AdaBoostRegressor': AdaBoostRegressor(),
     'SVR': SVR(),
     'MLPRegressor': MLPRegressor(),
     'DecisionTreeRegressor': DecisionTreeRegressor(),
@@ -22,7 +21,6 @@ models_mapper = {
     #Classifiers
     'LogisticRegression': LogisticRegression(),
     'RandomForestClassifier': RandomForestClassifier(),
-    'AdaBoostClassifier': AdaBoostClassifier(),
     'SVC': SVC(),
     'MLPClassifier': MLPClassifier(),
     'DecisionTreeClassifier': DecisionTreeClassifier(),
