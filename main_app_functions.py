@@ -278,7 +278,7 @@ def About_Us():
     + image1 + \
     "<div style='background-color:#a6f5dd' class='card-body'>"\
       + name_styler('Ayush Malik') +\
-      "<p class='card-text'>ML Entusiast | Python & Django Developer | Jmitian</p>\
+      "<p class='card-text'>ML Enthusiast | Python & Django Developer | Jmitian</p>\
       <a href='https://www.linkedin.com/in/ayush-malik-2252b7199/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
     <a href='https://github.com/Ayush-Malik' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
     </div>\
@@ -290,7 +290,7 @@ def About_Us():
     + image2 + \
     "<div style='background-color:#a6f5dd' class='card-body'>"\
       + name_styler('Abhay Dhiman') +\
-      "<p class='card-text'>ML & Deep Learning Entusiast | Python Developer | Jmitian</p>\
+      "<p class='card-text'>ML & Deep Learning Enthusiast | Python Developer | Jmitian</p>\
       <a href='https://www.linkedin.com/in/abhay-dhiman-409378191/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
     <a href='https://github.com/abhaydhiman' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
     </div>\
@@ -302,7 +302,7 @@ def About_Us():
     + image3 + \
     "<div style='background-color:#a6f5dd' class='card-body'>"\
       + name_styler('Aaditya Singhal') +\
-      "<p class='card-text'>ML & Deep Learning Entusiast | Python & flask Developer | Jmitian</p>\
+      "<p class='card-text'>ML & Deep Learning Enthusiast | Python & flask Developer | Jmitian</p>\
       <a href='https://www.linkedin.com/in/aaditya-singhal-a46720192/'  target='_blank' class='btn btn-success' style='color:black; font-weight:500'>Linkdin Profile</a>\
     <a href='https://github.com/Aaditya1978' class='btn btn-success'  target='_blank' style='color:black; font-weight:500'>Github Profile</a>\
     </div>\
