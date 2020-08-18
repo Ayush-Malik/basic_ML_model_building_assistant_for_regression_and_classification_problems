@@ -81,9 +81,6 @@ elif choice == "EDA": # For Navigating to EDA Page only when there's no null val
         text("")
         null_df = df.isnull().sum().sort_values( ascending = False).to_frame().reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null val count'})
         dataframe( null_df  , width = 1000 , height = 1000  )
-        # dataframe( pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().style.set_properties(**{'background-color': 'grey',
-        #                     'color': 'white',
-        #                     'border-color': 'black'}) , width = 1000 , height = 1000 )
 
     else:
         EDA()
@@ -102,9 +99,6 @@ elif choice == 'Model Building': # For Navigating to Model Building page only wh
         text("")
         null_df = df.isnull().sum().sort_values( ascending = False).to_frame().reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null val count'})
         dataframe( null_df  , width = 1000 , height = 1000  )
-        # dataframe( pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().style.set_properties(**{'background-color': 'grey',
-        #                     'color': 'white',
-        #                     'border-color': 'black'}) , width = 1000 , height = 1000 )
 
     else:    
         Model_Builder()
