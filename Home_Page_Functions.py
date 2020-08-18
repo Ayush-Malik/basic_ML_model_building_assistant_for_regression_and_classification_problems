@@ -7,14 +7,27 @@ import base64
 
 
 
-def Markdown_Style(value , type = 1):
+def Markdown_Style(value , type = 1 , size = None , border_box = True):
     # Markdown Styles
     length = len(value)
     link = "<link href='https://fonts.googleapis.com/css?family=Anton' rel='stylesheet'>"
     link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
     markdown_style1 = "position: relative; left: 50px; font-size:24px; color:rgb(14,179,83); font-family: Lato, sans-serif;"
-    markdown_style2 =  "position:relative; font-family:Anton; font-size: 33px;border-radius: 25px;border: 8px solid grey;padding: 20px;width: "+str(length*20)+"px;height: 100px;text-align:center;"
+
+    if size is not None:
+        size_code = "font-size: " + str(size) + "px;"
+    else:
+        size_code = "font-size: 33px;"
+
+    if border_box == True:
+        border_code = "border-radius: 25px;border: 8px solid grey;"
+    else:
+        border_code = ""
+
+
+    markdown_style2 =  "position:relative; font-family:Anton;"+ size_code + border_code  +"padding: 20px;width: "+str(length*20)+"px;height: 100px;text-align:center;"
     markdown_style3 = "text-align: center; font-family: anton; font-weight: 300; font-size:60px; padding-top: 20px; background-image: linear-gradient(to left, #7c0909, #09477c, green); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
+    
     if type == 1:
         style_type = markdown_style1
         markdown(link2 + "<p style='" + style_type +
@@ -51,7 +64,7 @@ def Cool_Data_Printer( sub_header = None , markdown_type_1 = None , markdown_typ
         Markdown_Style( markdown_type_1 , 1 )
 
     if markdown_type_2 is not None:
-        Markdown_Style( markdown_type_2 , 2)
+        Markdown_Style( markdown_type_2 , 2 )
     
     if data_frame is not None:
         dataframe( data_frame.head() )
@@ -233,6 +246,18 @@ def useless_features_manager(df):
         Markdown_Style("Useless Features :" , type = 2)
         write("The features which have high unique values are:")
         usl_df = useless_feat(df)
+
+
+        # appending the id column[if any] present in given df
+        # Checking for id column
+        lis_wow = []
+        for feature_name in df.columns:
+            if 'id' in feature_name.lower():
+                lis_wow.append(feature_name)
+        lis_wow.extend(list( usl_df['Feature'] ))
+        usl_df = pd.DataFrame( lis_wow , columns = ['Feature'] )
+
+
         if len(usl_df) != 0:
             text("")
             lis = []
