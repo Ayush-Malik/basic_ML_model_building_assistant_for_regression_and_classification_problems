@@ -14,7 +14,7 @@ def Markdown_Style(value , type = 1):
     link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
     markdown_style1 = "position: relative; left: 50px; font-size:24px; color:rgb(14,179,83); font-family: Lato, sans-serif;"
     markdown_style2 =  "position:relative; font-family:Anton; font-size: 33px;border-radius: 25px;border: 8px solid grey;padding: 20px;width: "+str(length*20)+"px;height: 100px;text-align:center;"
-    markdown_style3 = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, #7c0909, #09477c, green); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
+    markdown_style3 = "text-align: center; font-family: anton; font-weight: 300; font-size:60px; padding-top: 20px; background-image: linear-gradient(to left, #7c0909, #09477c, green); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
     if type == 1:
         style_type = markdown_style1
         markdown(link2 + "<p style='" + style_type +
@@ -119,8 +119,9 @@ def Cool_Data_Plotter(df , checkbox_text , drop_down_list  , plot_type , sub_hea
                     dataframe(df[categorical_feature].value_counts())
                     Markdown_Style("Total unique values : " + str(unique_len) , 1)
                 elif plot_type == 'pie_chart':
-                    percent_pie = prcntage_values( categorical_feature, df)
-                    plotly_chart(percent_pie)
+                    # percent_pie = prcntage_values( categorical_feature, df)
+                    fig = suplots_maker_for_table_and_piechart(df , type_null = True , feature = categorical_feature )
+                    plotly_chart(fig)
 
         elif select_box_text_type_2 is not None: # Two Checkboxes
             
@@ -187,7 +188,13 @@ def missing_values_filling_system(df , feature_tracker):
     count = 0
     for feature in feature_tracker:
         if checkbox(feature):
-            strategy = selectbox("Choose strategy", ["strategy","mean", "median", "mode"], key = count)
+            if df.dtypes[feature] == 'object':
+                stratigies_lis = ["strategy" ,  "mode"]
+            else:
+                stratigies_lis = ["strategy","mean", "median"]
+                 
+
+            strategy = selectbox("Choose strategy", stratigies_lis , key = count)
             if strategy != "strategy":
                 lis_fill.append(strategy)
                 feature_ch.append(feature)
@@ -197,6 +204,12 @@ def missing_values_filling_system(df , feature_tracker):
     text("")
     write(no_null)
 
+
+#############################################################################################################################################################################################
+
+def features_overview_provider(df):
+    fig = suplots_maker_for_table_and_piechart(df , type_null = False , feature = None)
+    return fig
 
 #############################################################################################################################################################################################
 
@@ -220,40 +233,56 @@ def useless_features_manager(df):
         Markdown_Style("Useless Features :" , type = 2)
         write("The features which have high unique values are:")
         usl_df = useless_feat(df)
-        write(usl_df)
-        text("")
-        flag = 0
-        for feature in usl_df["Feature"]:
-            if checkbox('Select to drop ' +  feature):
-                drop_useless_feat(df, feature)
-                success("Feature Dropped Successfully")
-                flag += 1
-        text("")
-        text("")
-        return flag
+        if len(usl_df) != 0:
+            text("")
+            lis = []
+            for feature in usl_df["Feature"]:
+                if checkbox('Select to drop ' +  feature):
+                    drop_useless_feat(df, feature)
+                    lis.append(feature)
+                    success("Feature Dropped Successfully")
+
+
+            new = list(usl_df['Feature'])
+            for val in lis:
+               new.remove(val)
+            usl_df = usl_df[ usl_df['Feature'].isin(new) ].reset_index().drop('index' , axis = 1)
+            
+
+            if len(usl_df) != 0:
+                write("Useless Features present in DataFrame : ")
+                write(usl_df)
+            text("")
+            text("")
+        else:
+            info("There are no useless Features in dataset")
 
 
 #############################################################################################################################################################################################
 
 
-def final_summary_provider(df , flag):
-        if button("Click if All done"):
-            subheader("After Doing all of the above Feature Engineering The dataset is now as below")
-            text("")
-            dataframe(df.head())
+def final_summary_provider(df):
 
-            text("")
-            write("There are now no null values and also there are no Imbalanced or useless Features")
+    markdown("____________________________________________________________________________")
+    header("After Doing the Feature Engineering The dataset is now as below")
+    markdown("____________________________________________________________________________")
 
-            text("")
-            success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
+    text("")
+    dataframe(df.head())
 
-            text("")
-            balloons()
-        info("To download this updated dataset click the link below")
-        csv = df.to_csv(index=False)
-        b64 = base64.b64encode(csv.encode()).decode()
-        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
-        markdown(href, unsafe_allow_html=True)
-        df.to_csv("update.csv",index=False)
+    if sum(df.isnull().sum()) == 0:
+        text("")
+        success("Congrats Data Preprocessing phase is Done 🎉🎉. Now You can move on to next part, i.e , Doing EDA")
+
+
+    # text("")
+    # success("Congrats Feature Engineering is Done 🎉🎉. Now You can move to next part, i.e , Doing EDA")
+
+    text("")
+    info("To download this updated dataset click the link below")
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()
+    href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+    markdown(href, unsafe_allow_html=True)
+    df.to_csv("update.csv",index=False)
 

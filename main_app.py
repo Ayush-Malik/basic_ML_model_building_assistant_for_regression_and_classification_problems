@@ -1,11 +1,12 @@
 from streamlit import *
 from main_app_functions import *
 import base64
+import os
 
 
 link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
 markdown_style_sidebar = "text-align: center; font-family: Georgia, Times, serif; font-weight: bolder; font-size:40px; padding-top: 20px; background-image: linear-gradient(to left, rgb(0, 179, 60), rgb(0, 179, 134), blue); - webkit-background-clip: text; - moz-background-clip: text; background-clip: text; color: transparent; "
-markdown_style_h1      = "font-size:40px; color:green; font-family: lato, sans-serif;"
+markdown_style_h1      = "font-size:40px; color:black; font-family: lato, sans-serif;"
 markdown_style_h2      = "font-family: lato, sans-serif; font-size: 20px; font-variant: normal; font-weight: 700; line-height: 15.4px; position:relative; left:30px; color:grey"
 
 
@@ -63,8 +64,47 @@ sidebar.markdown("<p>Made With ❤ @Pro_Coders</p>", unsafe_allow_html=True)
 if choice == "Home": # For Navigating to Home Page
     Home()
 
-elif choice == "EDA": # For Navigating to EDA Page
-    EDA()
+elif choice == "EDA": # For Navigating to EDA Page only when there's no null values in dataframe
+    
+    Markdown_Style('Exploratory data analysis' , 3)
+    text("")
+    text("")
 
-elif choice == 'Model Building': # For Navigating to Model Building page
-    Model_Builder()
+    df = pd.read_csv('update.csv')
+
+    if sum( df.isnull().sum() ) != 0:
+        subheader("Oops something went wrong , looks like there are Null values in DataFrame")
+        text("")
+        text("")
+        null_df = df.isnull().sum().sort_values( ascending = False).to_frame().reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null val count'})
+        dataframe( null_df  , width = 1000 , height = 1000  )
+        # dataframe( pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().style.set_properties(**{'background-color': 'grey',
+        #                     'color': 'white',
+        #                     'border-color': 'black'}) , width = 1000 , height = 1000 )
+
+    else:
+        EDA()
+
+elif choice == 'Model Building': # For Navigating to Model Building page only when there's no null values in df
+    
+    Markdown_Style('Model Building And Training' , 3)
+    text("")
+    text("")
+
+    df = pd.read_csv('update.csv')
+
+    if sum( df.isnull().sum() ) != 0:
+        subheader("Oops something went wrong , looks like there are Null values in DataFrame")
+        text("")
+        text("")
+        null_df = df.isnull().sum().sort_values( ascending = False).to_frame().reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null val count'})
+        dataframe( null_df  , width = 1000 , height = 1000  )
+        # dataframe( pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().style.set_properties(**{'background-color': 'grey',
+        #                     'color': 'white',
+        #                     'border-color': 'black'}) , width = 1000 , height = 1000 )
+
+    else:    
+        Model_Builder()
+
+elif choice == 'About Us': # For Navigating to About Us Page
+    About_Us()

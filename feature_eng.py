@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import seaborn as sns
 
 import plotly.offline as py
 py.init_notebook_mode(connected=True)
@@ -11,11 +10,14 @@ import plotly.express as px
 import cufflinks as cf
 cf.go_offline()
 
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+
 def type_of_feature(df):
 
-    dic = dict(df.dtypes)
-    dic = pd.DataFrame(dic.items(), columns = ["Features", "Dtypes"]).set_index("Features")
-    return(dic)
+    new_df = dict(df.dtypes)
+    new_df = pd.DataFrame(new_df.items(), columns = ["Features", "Dtypes"]).set_index("Features")
+    return(new_df)
 
 def null_value(df):
     # Null values management system (^_^)
@@ -44,10 +46,9 @@ def null_value(df):
 
     return(missing_values_count)
 
-def heatmap_generator(data, yticklabel=False, cbar_value=False):
+def heatmap_generator(df , coloraxis_val = False ):
     '''
     Generates heatmap plot according to the data received;
-    yticklabel:- defaults False but also can take values True to display all y labels and "auto" to display values automatically.
     cbar_value:- default is False but can also takes True as input to show cbar of heatmap.
     
     Example
@@ -55,7 +56,11 @@ def heatmap_generator(data, yticklabel=False, cbar_value=False):
     >>> heatmap_generator(df.isnull())
     >>> plots heatmap to display all null values in the dataset.
     '''
-    return(sns.heatmap(data, yticklabels = yticklabel, cbar = cbar_value))
+    
+    fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
+    fig.layout.coloraxis.showscale = coloraxis_val
+    fig.layout
+    return fig
 
 def imbalanced_feature(df):
     dic = dict(df.dtypes)
@@ -67,7 +72,7 @@ def imbalanced_feature(df):
             categorical_features.append(val)
             
 
-    print(categorical_features)
+    # print(categorical_features)
 
 
     imbalanced_features = []
@@ -177,3 +182,107 @@ def useless_feat(df):
 def drop_useless_feat(df, feature):
     df.drop([feature], axis = 1, inplace = True)
 
+
+
+# subplot makes for table + piechart which will be used in value counter
+
+def suplots_maker_for_table_and_piechart(df , type_null , feature = None):
+#-------------------------------------------------------------------------------------------------------
+    # Here we are using basically 4 variables , 2 for table and 2 for pie chart
+    # 1 Table variables --> headers , value_lis_for_table
+                        # headers is basically 1d list --> example --> ['Category' , 'Count']
+                        # value_lis_for_table is like given example below :
+                                            # [['S' , 'C' , 'Q'] , [644 , 168 , 77]]
+    # 2 Pie Chart --> labels , values
+                        # labels is basically a 1d list --> example --> ['S' , 'C' , 'Q']
+                        # vlaues is basically a 1d list --> example --> [644 , 168 , 77]
+#-------------------------------------------------------------------------------------------------------
+
+
+    headerColor = 'grey'
+    rowEvenColor = 'lightgrey'
+    rowOddColor = 'white'
+
+    if type_null == True:
+        dic = dict(df[feature].value_counts()) 
+
+        
+        # Table parameters --> headers , value_lis_for_table
+        headers = ['Category' , 'Count']
+        value_lis_for_table = [list( dic.keys() ) ,list( dic.values() ) ]
+
+        # Pie Chart parameters --> labels and values
+        labels = value_lis_for_table[0]
+        values = value_lis_for_table[1]
+
+        
+
+    else:
+        # Table parameters --> headers , value_lis_for_table
+        headers = ['Feature', 'Dtype']
+        type_of_feat_df = type_of_feature(df)
+
+        dic = {}
+        for val in type_of_feat_df.groupby('Dtypes'):
+            dic[ str(val[0]) ] =  len(val[1]) 
+        
+        new_df = type_of_feature(df).reset_index()
+
+        
+        A = []
+        B = []
+        for val in new_df.values:
+            A.append(str(val[0]).upper())
+            B.append(str(val[1]))
+
+        value_lis_for_table = [A , B]
+
+        # Pie Chart parameters --> labels and values
+        labels = list( dic.keys() )
+        values = list( dic.values() )
+
+
+    # trace for table , here extra parameters are just to provide style
+    trace_table = go.Table(
+                            columnorder = [2,5],
+                            columnwidth = [1 , 1],
+                            header=dict(
+                                values = headers,
+                                line_color='darkslategray',
+                                fill_color=headerColor,
+                                align=['left','center'],
+                                font=dict(color='white', size=15)
+                            ),
+                            cells=dict(
+                                values= value_lis_for_table,
+                                line_color='darkslategray',
+                                # 2-D list of colors for alternating rows
+                                # fill_color = [[rowOddColor , rowEvenColor , rowOddColor]*50],
+                                fill_color = [[  rowEvenColor*(i%2 != 0) + rowOddColor*(i%2 == 0) for i in range(len( value_lis_for_table[0] ))  ]] , 
+                                align = ['left', 'center'],
+                                font = dict(color = 'darkslategray', size = 13.5)
+                                ))
+
+   
+
+    trace_piechart = go.Pie(labels=labels, values=values)
+
+    # trace for pie_chart , here extra parameters are just to provide style
+    trace_piechart = go.Pie(labels =  labels ,
+                  values = values ,  hoverinfo='label+percent', textinfo='value', textfont_size=20 ,
+                  marker=dict( line=dict(color='#000000', width=3)) )
+
+
+    # Merging the given traces[trace_table , trace_pie_chart] using make_subplots
+    fig = make_subplots(rows=1, cols=2, specs=[[{"type": "Table"}, {"type": "pie"}]])
+    fig.add_trace(trace_table, row=1, col=1)
+    fig.add_trace(trace_piechart, row=1, col=2)
+
+    # Updating the size of figure
+    fig.update_layout(
+    autosize=False,
+    width =  1000,
+    height = 470)
+
+
+    return fig
