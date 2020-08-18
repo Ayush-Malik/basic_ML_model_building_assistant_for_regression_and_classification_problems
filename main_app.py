@@ -20,48 +20,33 @@ sidebar.text("")
 
 choice = sidebar.selectbox("Select Option",activities)
 
-# for i in range(10):
-#     sidebar.text("") 
-
 def image_maker(image_name):
     with open(image_name, "rb") as img_file:
         my_string = base64.b64encode(img_file.read()).decode()
-        imigi = "<img style='position:fixed; left:1px; bottom:1px; width:60px; height:60px; border-radius: 50%;' src='data:image/png;base64,{}' class='img-fluid'>".format(my_string)
+        imigi = "<img style='position:fixed; right:1px;bottom:1px; width:60px; height:60px; border-radius: 50%;' src='data:image/png;base64,{}' class='img-fluid'>".format(my_string)
         return imigi
 
 image1 = image_maker("git_icon.png")
 
-sidebar.markdown(
-    "<a style='font-size:20px; color:rgb(104, 96, 96); position:relative; left:30px;'  href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/streamlit_autoML' target='_blank'>" + image1 +"</a>",
-    unsafe_allow_html=True
-    )
 sidebar.text("") 
 sidebar.text("")
 sidebar.text("")
-
-image2 = image_maker("my image.jpg")
-image3 = image_maker("ab_image.jfif")
-image4 = image_maker("ay_image.jfif")
 
 sidebar.markdown(link2 + "<p style='" + markdown_style_h1 +"' >" + "Developed by : " + "</p>", unsafe_allow_html=True)
 sidebar.text("") 
 
-# sidebar.markdown(image4 + link2 + "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank'>Ayush Malik</a>", unsafe_allow_html=True)
-# sidebar.text("") 
+sidebar.markdown("<a href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#000066;vertical-align:middle;margin-right:1em;color:white;position:static;left:10px;'>AM</a>", unsafe_allow_html=True)
 
-# sidebar.markdown(image3 +link2 +  "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/abhay-dhiman-409378191/' target='_blank'>Abhay Dhiman</a>", unsafe_allow_html=True)
-# sidebar.text("") 
+sidebar.markdown("<a href='https://www.linkedin.com/in/abhay-dhiman-409378191/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#800080;vertical-align:middle;margin-right:1em;color:white;position:static;margin-left:60px;margin-top:-115px;'>AD</a>", unsafe_allow_html=True)
 
-# sidebar.markdown(image2 +link2 +  "<a style='" + markdown_style_h2 + "' " +"href='https://www.linkedin.com/in/aaditya-singhal-a46720192/' target='_blank'>Aaditya Singhal</a>", unsafe_allow_html=True)
+sidebar.markdown("<a href='https://www.linkedin.com/in/aaditya-singhal-a46720192/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#00b33c;vertical-align:middle;margin-right:1em;color:white;position:static;margin-left:120px;margin-top:-193px'>AS</a>", unsafe_allow_html=True)
 
-# for i in range(4):
-#     sidebar.text("") 
+sidebar.markdown("<p style='position: static; left:200px; margin-top:-87px; font-size:20px; font-weight:800;'>@Pro_Coders</p>", unsafe_allow_html=True)
 
-
-sidebar.markdown("<p style='position: static; left:200px; bottom:0px; font-size:20px; font-weight:800;'>@Pro_Coders</p>", unsafe_allow_html=True)
-
-
-# sidebar.markdown("<p>Made With ❤ @Pro_Coders</p>", unsafe_allow_html=True)
+sidebar.markdown(
+    "<a href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/streamlit_autoML' target='_blank'>" + image1 +"</a>",
+    unsafe_allow_html=True
+    )
 
 
 if choice == "Home": # For Navigating to Home Page
