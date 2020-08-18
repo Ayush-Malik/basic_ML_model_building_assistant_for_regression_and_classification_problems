@@ -135,7 +135,28 @@ def two_cat_comparator( lis_of_feat , df ):
         for key in dic:
             wow.append(  go.Bar(name = key  , x = np.array(dic[key])[: , 0]  , y = np.array(dic[key])[: , 1] )  )
         fig = go.Figure(data = wow)
-        fig.update_layout(barmode='group')
+
+
+
+
+        fig.update_layout(barmode='group' ,
+                        xaxis=dict(
+                                        title = lis_of_feat[1],
+                                        titlefont_size=16,
+                                        tickfont_size=14,
+                                    ) , 
+                        yaxis=dict(
+                                        title = "Count",
+                                        titlefont_size=16,
+                                        tickfont_size=14,
+                                    ) , 
+                        legend=dict(
+                                    title = dict( text = lis_of_feat[0] ,
+                                                  font_family = 'Arial' ,
+                                                  font_size = 25 )
+                                    
+                                )
+        )
         
         return fig
 
@@ -155,7 +176,10 @@ def drop_feat(df, lis_drop):
     for feat in drop_features:
         feature_tracker.remove(feat)
 
-    return(feature_tracker, "Features Were Dropped Successfully")
+    if len(lis_drop) == 1:
+        return(feature_tracker, "Feature was Dropped Successfully")
+    else:
+        return(feature_tracker, "Features were Dropped Successfully")
 
 
 def fill_feature(df, feature_ch, liss_fill): 
