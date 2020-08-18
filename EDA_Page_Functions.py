@@ -11,7 +11,7 @@ def EDA_heatmap(df):
     text("")
     numerical_feat,categorical_features = num_num(df)
 
-    if checkbox("Select to Visulaize Correlation heatmap"):
+    if checkbox("Select to Visualize Correlation heatmap"):
         selected_features = multiselect("Select Feature", numerical_feat)
         if selected_features != []:
             fig = correlation_heatmap(df , selected_features)
@@ -25,7 +25,7 @@ def EDA_boxplot(df):
     text("")
     numerical_feat,categorical_features = num_num(df)
 
-    if checkbox("Select to Visulaize Box Plot"):  #must show an error that you cannot pass more than 2 values
+    if checkbox("Select to Visualize Box Plot"):  #must show an error that you cannot pass more than 2 values
         selected_features = multiselect("Select minimum two Feature", numerical_feat,key=2)
         if len(selected_features) >= 2:
             fig2 = box_plot(df , selected_features)
