@@ -84,7 +84,7 @@ elif choice == "EDA":  # For Navigating to EDA Page only when there's no null va
         dataframe(null_df, width=1000, height=1000)
 
     else:
-        EDA()
+        EDA(df)
 
 elif choice == 'Model Building':  # For Navigating to Model Building page only when there's no null values in df
 
@@ -107,7 +107,7 @@ elif choice == 'Model Building':  # For Navigating to Model Building page only w
         dataframe(null_df, width=1000, height=1000)
 
     else:
-        Model_Builder()
+        Model_Builder(df)
 
 elif choice == 'About Us':  # For Navigating to About Us Page
     About_Us()
