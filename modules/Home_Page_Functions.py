@@ -295,7 +295,7 @@ def final_summary_provider(df):
 
     markdown(
         "____________________________________________________________________________")
-    header("After Doing the Feature Engineering The dataset is now as below")
+    header("After Doing the Data Preprocessing The dataset is now as below")
     markdown(
         "____________________________________________________________________________")
 
