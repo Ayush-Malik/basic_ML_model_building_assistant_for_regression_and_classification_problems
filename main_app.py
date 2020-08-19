@@ -2,6 +2,9 @@ from streamlit import *
 from main_app_functions import *
 import base64
 import os
+import SessionState
+
+session_state = SessionState.get(df="")
 
 
 link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
@@ -56,7 +59,7 @@ sidebar.markdown(
 
 
 if choice == "Home":  # For Navigating to Home Page
-    Home()
+    session_state.df = Home()
 
 elif choice == "EDA":  # For Navigating to EDA Page only when there's no null values in dataframe
 
@@ -64,9 +67,14 @@ elif choice == "EDA":  # For Navigating to EDA Page only when there's no null va
     text("")
     text("")
 
-    df = pd.read_csv('update.csv')
+    # df = pd.read_csv('update.csv')
 
-    if sum(df.isnull().sum()) != 0:
+    df = session_state.df
+
+    if type(df) != type(pd.DataFrame()):
+        error("Oops you didn't have uploaded a DataFrame yet!!!")
+
+    elif sum(df.isnull().sum()) != 0:
         subheader(
             "Oops something went wrong , looks like there are Null values in DataFrame")
         text("")
@@ -84,9 +92,12 @@ elif choice == 'Model Building':  # For Navigating to Model Building page only w
     text("")
     text("")
 
-    df = pd.read_csv('update.csv')
+    df = session_state.df
 
-    if sum(df.isnull().sum()) != 0:
+    if type(df) != type(pd.DataFrame()):
+        error("Oops you didn't have uploaded a DataFrame yet!!!")
+
+    elif sum(df.isnull().sum()) != 0:
         subheader(
             "Oops something went wrong , looks like there are Null values in DataFrame")
         text("")
