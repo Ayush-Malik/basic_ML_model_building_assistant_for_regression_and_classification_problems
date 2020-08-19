@@ -99,13 +99,14 @@ def Home():
         # final summary provider
         final_summary_provider(df)
 
+        # Return the updated dataframe
+        return df
 
 #############################################################################################################################################################################################
 
 
 def EDA():
 
-    df = pd.read_csv('update.csv')
     dataframe(df.head())
     text("")
     text("")
@@ -134,9 +135,6 @@ def EDA():
 
 
 def Model_Builder():
-
-    # Loading the updated dataset which ready for model
-    df = pd.read_csv('update.csv')
 
     dataframe(df.head())
 
