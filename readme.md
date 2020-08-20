@@ -21,9 +21,11 @@ ML Automator is deployed Here  ----->>>  https://ml-automator.herokuapp.com/
 - Firstly clone the whole repo to your Local System using Following command in git bash :- 
   ``git clone https://github.com/AyushMalik/basic_ML_model_building_assistant_for_regression_and_classification_problems.git``
 
-- Open cmd and type ``mk virtual env 'your_enviroment_name'`` to create a seprate virtual enviroment. 
+- move to `basic_ML_model_building_assistant_for_regression_and_classification_problems` folder
 
-- Now to Shift to your Virtual enviroment type  ``work on 'your_enviroment_name'``  
+- Open cmd and type ``mkvirtualenv your_enviroment_name`` to create a seprate virtual enviroment. 
+
+- Now to Shift to your Virtual enviroment type  ``workon your_enviroment_name``  
 
 - Now to install all required packages for this web App type ``pip install -r requirements.txt`` in your cmd.
 
