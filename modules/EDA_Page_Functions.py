@@ -12,7 +12,7 @@ def EDA_heatmap(df):
 
     if checkbox("Select to Visualize Correlation heatmap"):
         selected_features = multiselect("Select Feature", numerical_feat)
-        if selected_features != []:
+        if selected_features != [] and len(selected_features) >= 2:
             fig = correlation_heatmap(df, selected_features)
             plotly_chart(fig)
 
