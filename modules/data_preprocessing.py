@@ -56,11 +56,13 @@ def heatmap_generator(df , coloraxis_val = False ):
     >>> heatmap_generator(df.isnull())
     >>> plots heatmap to display all null values in the dataset.
     '''
-    
-    fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
-    fig.layout.coloraxis.showscale = coloraxis_val
-    fig.layout
-    return fig
+    if sum(df.isnull().sum()) != 0:
+        fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
+        fig.layout.coloraxis.showscale = coloraxis_val
+        fig.layout
+        return fig
+    else:
+        return None
 
 def imbalanced_feature(df):
     dic = dict(df.dtypes)
@@ -135,7 +137,28 @@ def two_cat_comparator( lis_of_feat , df ):
         for key in dic:
             wow.append(  go.Bar(name = key  , x = np.array(dic[key])[: , 0]  , y = np.array(dic[key])[: , 1] )  )
         fig = go.Figure(data = wow)
-        fig.update_layout(barmode='group')
+
+
+
+
+        fig.update_layout(barmode='group' ,
+                        xaxis=dict(
+                                        title = lis_of_feat[1],
+                                        titlefont_size=16,
+                                        tickfont_size=14,
+                                    ) , 
+                        yaxis=dict(
+                                        title = "Count",
+                                        titlefont_size=16,
+                                        tickfont_size=14,
+                                    ) , 
+                        legend=dict(
+                                    title = dict( text = lis_of_feat[0] ,
+                                                  font_family = 'Arial' ,
+                                                  font_size = 25 )
+                                    
+                                )
+        )
         
         return fig
 
@@ -155,7 +178,10 @@ def drop_feat(df, lis_drop):
     for feat in drop_features:
         feature_tracker.remove(feat)
 
-    return(feature_tracker, "Features Were Dropped Successfully")
+    if len(lis_drop) == 1:
+        return(feature_tracker, "Feature was Dropped Successfully")
+    else:
+        return(feature_tracker, "Features were Dropped Successfully")
 
 
 def fill_feature(df, feature_ch, liss_fill): 
@@ -169,7 +195,8 @@ def fill_feature(df, feature_ch, liss_fill):
         elif strategy_given_by_user == 'median':
             df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].median())
         i += 1
-    return(pd.DataFrame(df.isnull().sum().sort_values(ascending = False),columns = ["Null value Count"]))
+    return pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null Value Count'})
+
 
 def useless_feat(df):
     useless_ls = []
