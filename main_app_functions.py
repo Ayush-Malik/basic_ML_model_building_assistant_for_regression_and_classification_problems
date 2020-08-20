@@ -246,10 +246,11 @@ def Model_Builder(df):
                         y_pred = model_object.output(selectd_models)
                         y_pred = pd.DataFrame(y_pred)
                         
-                        # y_pred = label_encoder_obj.inverse_transform(y_pred)
+                        y_pred = label_encoder_obj.inverse_transform(y_pred)
 
                         dataframe(y_pred)
                         text("")
+                        y_pred = pd.DataFrame(y_pred)
                         csv = y_pred.to_csv(index=False)
                         b64 = base64.b64encode(csv.encode()).decode()
                         href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
