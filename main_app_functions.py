@@ -11,6 +11,113 @@ markdown("<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap
 #############################################################################################################################################################################################
 
 
+def model_work_implementer(the_df , target_feature , label_encoder_obj = None):
+    typ, statem = set_target(the_df, target_feature)
+    info(statem) # Suggesting the type of problem (classification/Regression)
+
+    if checkbox("Want to change the Problem Type (Classification / Regression)"):
+        if typ == "Regression":
+            typ = "Classification"
+            info("Changed successfully, Now its a " + typ + " Problem")
+        else:
+            typ = "Regression"
+            info("Changed successfully, Now its a " + typ + " Problem")
+
+
+
+    # Getting dummy variables of Categorical features
+    the_df = pd.get_dummies(the_df, drop_first=True)
+    info("After converting Categorical Features into Numerical Ones, The current dataset is")
+    dataframe(the_df.head())
+    text("")
+    Markdown_Style("Shape of the Dataframe " + str(the_df.shape), 1)
+
+
+    # Splitting the dataset into training and testing data
+    text("")
+    Markdown_Style("Let's Start Splitting The Dataset", 2)
+    text("")
+
+    prcntage = 0.82
+    info("By default Percentage of Training Data is 82 %")
+    text("")
+
+    if checkbox("Select to Change Training Dataset Size"):
+        prcntage = slider('Select percentage', 60, 86)
+        write("You selected : ", prcntage, "percent for training Dataset")
+        prcntage = prcntage/100
+    train, test = train_test_splitter(the_df, prcntage)
+
+
+    # Updated shape of training and testing data
+    text("")
+    Markdown_Style("Shape of the Training Dataset: " + str(train.shape), 1)
+    text("")
+    Markdown_Style("Shape of the Test Dataset:-  " + str(test.shape), 1)
+    text("")
+    text("")
+
+    x_train, x_test, y_train, y_test = x_y_maker(
+        target_feature, train, test)
+    info("Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
+
+    text("")
+    text("")
+    x_list = [x_train, x_test]
+    y_list = [y_train, y_test]
+    mlists = []
+
+
+
+    # Taking the models from user which will be used for training
+    text("")
+    Markdown_Style("Let's Start Model Training", 2)
+    text("")
+    if typ == "Regression":
+        mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
+                'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
+    else:
+        mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
+                'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
+    models_lists = multiselect("Select Models", mlists)
+    model_object = Models(x_list, y_list, typ, models_lists)
+    model_object.model_call()
+    extra = ["Select"]
+    extra.extend(models_lists)
+
+
+
+    # Predictions Downloader
+    if models_lists != []:  # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
+        text("")
+        text("")
+        Markdown_Style("Y_Pred Dataset Downloader", 2)
+        text("")
+        if checkbox("Select to get Y_predictions of a model"):
+            selectd_models = selectbox("Select Model", extra)
+            if selectd_models != "Select":
+                y_pred = model_object.output(selectd_models)
+                y_pred = pd.DataFrame(y_pred)
+                
+                if label_encoder_obj is not None: #If our target feature was categorical
+                    y_pred = label_encoder_obj.inverse_transform(y_pred)
+
+
+                y_pred = pd.DataFrame(y_pred).rename(columns = {0 : target_feature})
+                subheader("Head of y-predictions is shown below :")
+                dataframe( y_pred.head(20) )
+                text("")
+
+                
+                csv = y_pred.to_csv(index=False)
+                b64 = base64.b64encode(csv.encode()).decode()
+                href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+                markdown(href, unsafe_allow_html=True)
+
+
+#############################################################################################################################################################################################
+
+
 def Home():
     Markdown_Style("Data Preprocessing", 3)
     text("")
@@ -144,211 +251,244 @@ def Model_Builder(df):
     text("")
     text("")
 
-    # Getting the target feature from the user
     text("")
     nlist = ["Feature"]
     nlist.extend(fe_list)
     Markdown_Style('Select The Target Feature :', 2)
-
-    # Suggesting the type of problem (classification/Regression)
     text("")
-    target_feature = selectbox("", nlist)
+
+    target_feature = selectbox("", nlist)      # Getting the target feature from the user
+
     if target_feature != "Feature":
-        if df.dtypes[target_feature] == 'object':
+
+        if df.dtypes[target_feature] == 'object':    # If the target feature is categorical and is of object type we have to apply label encoding first
+           
             the_df = pd.DataFrame()
             the_df = pd.concat([the_df, df], axis=1)
             
-            # If the target feature is categorical and is of object type we have to apply label encoding first
             label_encoder_obj = LabelEncoder()
-            the_df[target_feature] = label_encoder_obj.fit_transform(
-                the_df[target_feature])
-            typ, statem = set_target(the_df, target_feature)
-            info(statem)
-            if checkbox("Want to change the Problem Type (Classification / Regression)"):
-                if typ == "Regression":
-                    typ = "Classification"
-                    info("Changed successfully, Now its a " + typ + " Problem")
-                else:
-                    typ = "Regression"
-                    info("Changed successfully, Now its a " + typ + " Problem")
+            the_df[target_feature] = label_encoder_obj.fit_transform(the_df[target_feature])
 
-
-
-        # Getting dummy variables of Categorical features
-            the_df = pd.get_dummies(the_df, drop_first=True)
-            info("After converting Categorical Features into Numerical Ones, The current dataset is")
-            dataframe(the_df.head())
-            text("")
-            Markdown_Style("Shape of the Dataframe " + str(the_df.shape), 1)
-
-
-        # Splitting the dataset into training and testing data
-            text("")
-            Markdown_Style("Let's Start Splitting The Dataset", 2)
-            text("")
-
-            prcntage = 0.82
-            info("By default Percentage of Training Data is 82 %")
-            text("")
-
-            if checkbox("Select to Change Training Dataset Size"):
-                prcntage = slider('Select percentage', 60, 86)
-                write("You selected : ", prcntage, "percent for training Dataset")
-                prcntage = prcntage/100
-            train, test = train_test_splitter(the_df, prcntage)
-
-        # Updated shape of training and testing data
-            text("")
-            Markdown_Style("Shape of the Training Dataset: " + str(train.shape), 1)
-            text("")
-            Markdown_Style("Shape of the Test Dataset:-  " + str(test.shape), 1)
-            text("")
-            text("")
-
-            x_train, x_test, y_train, y_test = x_y_maker(
-                target_feature, train, test)
-            info("Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
-
-            text("")
-            text("")
-            x_list = [x_train, x_test]
-            y_list = [y_train, y_test]
-            mlists = []
-
-            # Taking the models from user which will be used for training
-            text("")
-            Markdown_Style("Let's Start Model Training", 2)
-            text("")
-            if typ == "Regression":
-                mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
-                        'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
-            else:
-                mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
-                        'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
-            models_lists = multiselect("Select Models", mlists)
-            model_object = Models(x_list, y_list, typ, models_lists)
-            model_object.model_call()
-            extra = ["Select"]
-            extra.extend(models_lists)
-
-            # Predictions Downloader
-            if models_lists != []:  # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
-                text("")
-                text("")
-                Markdown_Style("Y_Pred Dataset Downloader", 2)
-                text("")
-                if checkbox("Select to get Y_predictions of a model"):
-                    selectd_models = selectbox("Select Model", extra)
-                    if selectd_models != "Select":
-                        y_pred = model_object.output(selectd_models)
-                        y_pred = pd.DataFrame(y_pred)
-                        
-                        y_pred = label_encoder_obj.inverse_transform(y_pred)
-
-                        dataframe(y_pred)
-                        text("")
-                        y_pred = pd.DataFrame(y_pred)
-                        csv = y_pred.to_csv(index=False)
-                        b64 = base64.b64encode(csv.encode()).decode()
-                        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
-                        markdown(href, unsafe_allow_html=True)
+            model_work_implementer(the_df , target_feature , label_encoder_obj = label_encoder_obj )
         else:
-            typ, statem = set_target(df, target_feature)
-            info(statem)
-            if checkbox("Want to change the Problem Type (Classification / Regression)"):
-                if typ == "Regression":
-                    typ = "Classification"
-                    info("Changed successfully, Now its a " + typ + " Problem")
-                else:
-                    typ = "Regression"
-                    info("Changed successfully, Now its a " + typ + " Problem")
+            model_work_implementer(df , target_feature)
 
-        # If the target feature is categorical and is of object type we have to apply label encoding first
-        # if df.dtypes[target_feature] == 'object':
-        #     label_encoder_obj = LabelEncoder()
-        #     df[target_feature] = label_encoder_obj.fit_transform(df[target_feature])
 
-        # Getting dummy variables of Categorical features
-            df = pd.get_dummies(df, drop_first=True)
-            info(
-                "After converting Categorical Features into Numerical Ones, The current dataset is")
-            dataframe(df.head())
-            text("")
-            Markdown_Style("Shape of the Dataframe " + str(df.shape), 1)
 
-        # Splitting the dataset into training and testing data
-            text("")
-            Markdown_Style("Let's Start Splitting The Dataset", 2)
-            text("")
 
-            prcntage = 0.82
-            info("By default Percentage of Training Data is 82 %")
-            text("")
 
-            if checkbox("Select to Change Training Dataset Size"):
-                prcntage = slider('Select percentage', 60, 86)
-                write("You selected : ", prcntage,
-                      "percent for training Dataset")
-                prcntage = prcntage/100
-            train, test = train_test_splitter(df, prcntage)
 
-        # Updated shape of training and testing data
-            text("")
-            Markdown_Style("Shape of the Training Dataset: " +
-                           str(train.shape), 1)
-            text("")
-            Markdown_Style("Shape of the Test Dataset:-  " +
-                           str(test.shape), 1)
-            text("")
-            text("")
 
-            x_train, x_test, y_train, y_test = x_y_maker(
-                target_feature, train, test)
-            info(
-                "Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
 
-            text("")
-            text("")
-            x_list = [x_train, x_test]
-            y_list = [y_train, y_test]
-            mlists = []
 
-            # Taking the models from user which will be used for training
-            text("")
-            Markdown_Style("Let's Start Model Training", 2)
-            text("")
-            if typ == "Regression":
-                mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
-                          'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
-            else:
-                mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
-                          'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
-            models_lists = multiselect("Select Models", mlists)
-            model_object = Models(x_list, y_list, typ, models_lists)
-            model_object.model_call()
-            extra = ["Select"]
-            extra.extend(models_lists)
 
-            # Predictions Downloader
-            if models_lists != []:  # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
-                text("")
-                text("")
-                Markdown_Style("Y_Pred Dataset Downloader", 2)
-                text("")
-                if checkbox("Select to get Y_predictions of a model"):
-                    selectd_models = selectbox("Select Model", extra)
-                    if selectd_models != "Select":
-                        y_pred = model_object.output(selectd_models)
-                        y_pred = pd.DataFrame(y_pred)
 
-                        # y_pred = label_encoder_obj.inverse_transform(y_pred)
 
-                        dataframe(y_pred)
-                        text("")
-                        csv = y_pred.to_csv(index=False)
-                        b64 = base64.b64encode(csv.encode()).decode()
-                        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
-                        markdown(href, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #     typ, statem = set_target(the_df, target_feature)
+        #     info(statem) # Suggesting the type of problem (classification/Regression)
+
+        #     if checkbox("Want to change the Problem Type (Classification / Regression)"):
+        #         if typ == "Regression":
+        #             typ = "Classification"
+        #             info("Changed successfully, Now its a " + typ + " Problem")
+        #         else:
+        #             typ = "Regression"
+        #             info("Changed successfully, Now its a " + typ + " Problem")
+
+
+
+        # # Getting dummy variables of Categorical features
+        #     the_df = pd.get_dummies(the_df, drop_first=True)
+        #     info("After converting Categorical Features into Numerical Ones, The current dataset is")
+        #     dataframe(the_df.head())
+        #     text("")
+        #     Markdown_Style("Shape of the Dataframe " + str(the_df.shape), 1)
+
+
+        # # Splitting the dataset into training and testing data
+        #     text("")
+        #     Markdown_Style("Let's Start Splitting The Dataset", 2)
+        #     text("")
+
+        #     prcntage = 0.82
+        #     info("By default Percentage of Training Data is 82 %")
+        #     text("")
+
+        #     if checkbox("Select to Change Training Dataset Size"):
+        #         prcntage = slider('Select percentage', 60, 86)
+        #         write("You selected : ", prcntage, "percent for training Dataset")
+        #         prcntage = prcntage/100
+        #     train, test = train_test_splitter(the_df, prcntage)
+
+        # # Updated shape of training and testing data
+        #     text("")
+        #     Markdown_Style("Shape of the Training Dataset: " + str(train.shape), 1)
+        #     text("")
+        #     Markdown_Style("Shape of the Test Dataset:-  " + str(test.shape), 1)
+        #     text("")
+        #     text("")
+
+        #     x_train, x_test, y_train, y_test = x_y_maker(
+        #         target_feature, train, test)
+        #     info("Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
+
+        #     text("")
+        #     text("")
+        #     x_list = [x_train, x_test]
+        #     y_list = [y_train, y_test]
+        #     mlists = []
+
+        #     # Taking the models from user which will be used for training
+        #     text("")
+        #     Markdown_Style("Let's Start Model Training", 2)
+        #     text("")
+        #     if typ == "Regression":
+        #         mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
+        #                 'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
+        #     else:
+        #         mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
+        #                 'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
+        #     models_lists = multiselect("Select Models", mlists)
+        #     model_object = Models(x_list, y_list, typ, models_lists)
+        #     model_object.model_call()
+        #     extra = ["Select"]
+        #     extra.extend(models_lists)
+
+        #     # Predictions Downloader
+        #     if models_lists != []:  # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
+        #         text("")
+        #         text("")
+        #         Markdown_Style("Y_Pred Dataset Downloader", 2)
+        #         text("")
+        #         if checkbox("Select to get Y_predictions of a model"):
+        #             selectd_models = selectbox("Select Model", extra)
+        #             if selectd_models != "Select":
+        #                 y_pred = model_object.output(selectd_models)
+        #                 y_pred = pd.DataFrame(y_pred)
+                        
+        #                 y_pred = label_encoder_obj.inverse_transform(y_pred)
+
+        #                 dataframe(y_pred)
+        #                 text("")
+        #                 y_pred = pd.DataFrame(y_pred)
+        #                 csv = y_pred.to_csv(index=False)
+        #                 b64 = base64.b64encode(csv.encode()).decode()
+        #                 href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+        #                 markdown(href, unsafe_allow_html=True)
+        # else:
+        #     the_df = df.copy(deep = Tr)
+        #     typ, statem = set_target(df, target_feature)
+        #     info(statem)
+        #     if checkbox("Want to change the Problem Type (Classification / Regression)"):
+        #         if typ == "Regression":
+        #             typ = "Classification"
+        #             info("Changed successfully, Now its a " + typ + " Problem")
+        #         else:
+        #             typ = "Regression"
+        #             info("Changed successfully, Now its a " + typ + " Problem")
+
+        # # If the target feature is categorical and is of object type we have to apply label encoding first
+        # # if df.dtypes[target_feature] == 'object':
+        # #     label_encoder_obj = LabelEncoder()
+        # #     df[target_feature] = label_encoder_obj.fit_transform(df[target_feature])
+
+        # # Getting dummy variables of Categorical features
+        #     df = pd.get_dummies(df, drop_first=True)
+        #     info(
+        #         "After converting Categorical Features into Numerical Ones, The current dataset is")
+        #     dataframe(df.head())
+        #     text("")
+        #     Markdown_Style("Shape of the Dataframe " + str(df.shape), 1)
+
+        # # Splitting the dataset into training and testing data
+        #     text("")
+        #     Markdown_Style("Let's Start Splitting The Dataset", 2)
+        #     text("")
+
+        #     prcntage = 0.82
+        #     info("By default Percentage of Training Data is 82 %")
+        #     text("")
+
+        #     if checkbox("Select to Change Training Dataset Size"):
+        #         prcntage = slider('Select percentage', 60, 86)
+        #         write("You selected : ", prcntage,
+        #               "percent for training Dataset")
+        #         prcntage = prcntage/100
+        #     train, test = train_test_splitter(df, prcntage)
+
+        # # Updated shape of training and testing data
+        #     text("")
+        #     Markdown_Style("Shape of the Training Dataset: " +
+        #                    str(train.shape), 1)
+        #     text("")
+        #     Markdown_Style("Shape of the Test Dataset:-  " +
+        #                    str(test.shape), 1)
+        #     text("")
+        #     text("")
+
+        #     x_train, x_test, y_train, y_test = x_y_maker(
+        #         target_feature, train, test)
+        #     info(
+        #         "Now the Train and test dataset are splitted into x_train, x_test, y_train, y_test")
+
+        #     text("")
+        #     text("")
+        #     x_list = [x_train, x_test]
+        #     y_list = [y_train, y_test]
+        #     mlists = []
+
+        #     # Taking the models from user which will be used for training
+        #     text("")
+        #     Markdown_Style("Let's Start Model Training", 2)
+        #     text("")
+        #     if typ == "Regression":
+        #         mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
+        #                   'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
+        #     else:
+        #         mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
+        #                   'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
+        #     models_lists = multiselect("Select Models", mlists)
+        #     model_object = Models(x_list, y_list, typ, models_lists)
+        #     model_object.model_call()
+        #     extra = ["Select"]
+        #     extra.extend(models_lists)
+
+        #     # Predictions Downloader
+        #     if models_lists != []:  # Y-pred dowloader will show only when there's a model in modelslists[model selected by user are contained in it]
+        #         text("")
+        #         text("")
+        #         Markdown_Style("Y_Pred Dataset Downloader", 2)
+        #         text("")
+        #         if checkbox("Select to get Y_predictions of a model"):
+        #             selectd_models = selectbox("Select Model", extra)
+        #             if selectd_models != "Select":
+        #                 y_pred = model_object.output(selectd_models)
+        #                 y_pred = pd.DataFrame(y_pred)
+
+        #                 # y_pred = label_encoder_obj.inverse_transform(y_pred)
+
+        #                 dataframe(y_pred)
+        #                 text("")
+        #                 csv = y_pred.to_csv(index=False)
+        #                 b64 = base64.b64encode(csv.encode()).decode()
+        #                 href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as &lt;some_name&gt;.csv)'
+        #                 markdown(href, unsafe_allow_html=True)
 
 #############################################################################################################################################################################################
 
