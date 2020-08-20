@@ -52,7 +52,7 @@ sidebar.markdown(
      "<p style='position: static; left:200px; font-size:20px; font-weight:800;'>@Pro_Coders</p>", unsafe_allow_html=True)
 
 sidebar.markdown(
-    "<a href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/streamlit_autoML' target='_blank'>" + image1 + "</a>",
+    "<a href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/master' target='_blank'>" + image1 + "</a>",
     unsafe_allow_html=True
 )
 
