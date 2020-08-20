@@ -56,11 +56,13 @@ def heatmap_generator(df , coloraxis_val = False ):
     >>> heatmap_generator(df.isnull())
     >>> plots heatmap to display all null values in the dataset.
     '''
-    
-    fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
-    fig.layout.coloraxis.showscale = coloraxis_val
-    fig.layout
-    return fig
+    if sum(df.isnull().sum()) != 0:
+        fig = px.imshow(df.isnull() , color_continuous_scale = 'ice' , width = 800, height = 600,)
+        fig.layout.coloraxis.showscale = coloraxis_val
+        fig.layout
+        return fig
+    else:
+        return None
 
 def imbalanced_feature(df):
     dic = dict(df.dtypes)
