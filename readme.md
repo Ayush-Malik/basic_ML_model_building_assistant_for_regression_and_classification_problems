@@ -27,6 +27,8 @@ ML Automator is deployed Here    ----->>>    <a href="https://ml-automator.herok
 
 - Now as all the required libraries are installed , type 'streamlit run main_app.py' in your virtual enviroment cmd.
 
+- After this the website will start running on the Localhost. And there You go !!!
+
 
 
 ## Current Contributors
