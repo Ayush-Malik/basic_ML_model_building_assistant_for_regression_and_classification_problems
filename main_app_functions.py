@@ -144,13 +144,6 @@ def Model_Builder(df):
     text("")
     text("")
 
-    # Getting dummy variables of Categorical features
-    df = pd.get_dummies(df, drop_first=True)
-    info("After converting Categorical Features into Numerical Ones, The current dataset is")
-    dataframe(df.head())
-    text("")
-    Markdown_Style("Shape of the Dataframe " + str(df.shape), 1)
-
     # Getting the target feature from the user
     text("")
     nlist = ["Feature"]
@@ -171,8 +164,22 @@ def Model_Builder(df):
                 typ = "Regression"
                 info("Changed successfully, Now its a " + typ + " Problem")
 
-    # Splitting the dataset into training and testing data
-    if target_feature != "Feature":
+
+        # If the target feature is categorical and is of object type we have to apply label encoding first
+        if df.dtypes[target_feature] == 'object': 
+            label_encoder_obj = LabelEncoder()
+            df[target_feature] = label_encoder_obj.fit_transform(df[target_feature])
+
+
+        # Getting dummy variables of Categorical features
+        df = pd.get_dummies(df, drop_first=True)
+        info("After converting Categorical Features into Numerical Ones, The current dataset is")
+        dataframe(df.head())
+        text("")
+        Markdown_Style("Shape of the Dataframe " + str(df.shape), 1)
+
+
+        # Splitting the dataset into training and testing data
         text("")
         Markdown_Style("Let's Start Splitting The Dataset", 2)
         text("")
@@ -180,6 +187,7 @@ def Model_Builder(df):
         prcntage = 0.82
         info("By default Percentage of Training Data is 82 %")
         text("")
+
         if checkbox("Select to Change Training Dataset Size"):
             prcntage = slider('Select percentage', 60, 86)
             write("You selected : ", prcntage, "percent for training Dataset")
@@ -210,10 +218,10 @@ def Model_Builder(df):
         text("")
         if typ == "Regression":
             mlists = ['LinearRegression', 'RandomForestRegressor', 'SVR',
-                      'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
+                    'MLPRegressor', 'DecisionTreeRegressor', 'XGBRegressor']
         else:
             mlists = ['LogisticRegression', 'RandomForestClassifier', 'SVC',
-                      'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
+                    'MLPClassifier', 'DecisionTreeClassifier', 'XGBClassifier']
         models_lists = multiselect("Select Models", mlists)
         model_object = Models(x_list, y_list, typ, models_lists)
         model_object.model_call()
@@ -231,6 +239,9 @@ def Model_Builder(df):
                 if selectd_models != "Select":
                     y_pred = model_object.output(selectd_models)
                     y_pred = pd.DataFrame(y_pred)
+                    
+                    # y_pred = label_encoder_obj.inverse_transform(y_pred)
+
                     dataframe(y_pred)
                     text("")
                     csv = y_pred.to_csv(index=False)

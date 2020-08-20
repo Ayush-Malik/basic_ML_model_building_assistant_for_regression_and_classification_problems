@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from xgboost import XGBClassifier, XGBRegressor
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, r2_score, mean_squared_error, mean_squared_log_error
 from streamlit import *
+from sklearn.preprocessing import LabelEncoder
 
 
 models_mapper = {
@@ -97,11 +98,11 @@ class Models:
 
 def acc_measure_cls(y_test, y_pred):
     acc = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    roc_auc = roc_auc_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred , average = 'micro')
+    # roc_auc = roc_auc_score(y_test, y_pred , multi_class = 'ovr' )
     write("Accuracy Score:- ", acc)
     write("F1 Score:- ", f1)
-    write("ROC AUC Score:- ", roc_auc)
+    # write("ROC AUC Score:- ", roc_auc)
 
 def acc_measure_reg(y_test, y_pred):
     r2 = r2_score(y_test, y_pred)
