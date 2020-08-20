@@ -107,7 +107,7 @@ def acc_measure_cls(y_test, y_pred):
     except:    
         write("Accuracy Score:- ", acc)
         write("F1 Score:- ", f1)
-        write("ROC AUC Score can't be shown as target feature is of multiclass")
+        write("ROC AUC Score can't be shown because target feature is of multiclass")
 
 
 def acc_measure_reg(y_test, y_pred):
