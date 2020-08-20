@@ -29,7 +29,7 @@ ML Automator is deployed Here  ----->>>  https://ml-automator.herokuapp.com/
 
 - Now as all the required packages are installed , type ``streamlit run main_app.py`` in your cmd.
 
-- After this the website will start running on your Localhost. And there You go !!!
+- After this the website will start running on your Localhost. And there You go !!! 😃😃😃
 
 
 
