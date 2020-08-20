@@ -193,7 +193,8 @@ def fill_feature(df, feature_ch, liss_fill):
         elif strategy_given_by_user == 'median':
             df[ feature_name ] = df[ feature_name ].fillna( df[ feature_name ].median())
         i += 1
-    return(pd.DataFrame(df.isnull().sum().sort_values(ascending = False),columns = ["Null value Count"]))
+    return pd.DataFrame(df.isnull().sum().sort_values(ascending = False)).reset_index().rename(columns = {'index' : 'Feature' , 0 : 'Null Value Count'})
+
 
 def useless_feat(df):
     useless_ls = []
