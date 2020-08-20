@@ -68,7 +68,7 @@ def Cool_Data_Printer(sub_header=None, markdown_type_1=None, markdown_type_2=Non
     if data_frame is not None:
         dataframe(data_frame.head())
 
-    if write_this is not None:
+    if (write_this is not None) and (len(write_this) != 0):
         write(write_this)
 
     if print_info is not None:
