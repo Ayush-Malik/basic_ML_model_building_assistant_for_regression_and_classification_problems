@@ -157,6 +157,8 @@ def Model_Builder(df):
         if df.dtypes[target_feature] == 'object':
             the_df = pd.DataFrame()
             the_df = pd.concat([the_df, df], axis=1)
+            
+            # If the target feature is categorical and is of object type we have to apply label encoding first
             label_encoder_obj = LabelEncoder()
             the_df[target_feature] = label_encoder_obj.fit_transform(
                 the_df[target_feature])
@@ -170,11 +172,6 @@ def Model_Builder(df):
                     typ = "Regression"
                     info("Changed successfully, Now its a " + typ + " Problem")
 
-
-        # If the target feature is categorical and is of object type we have to apply label encoding first
-        # if df.dtypes[target_feature] == 'object': 
-        #     label_encoder_obj = LabelEncoder()
-        #     df[target_feature] = label_encoder_obj.fit_transform(df[target_feature])
 
 
         # Getting dummy variables of Categorical features
