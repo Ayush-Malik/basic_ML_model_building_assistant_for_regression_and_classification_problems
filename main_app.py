@@ -43,14 +43,13 @@ sidebar.markdown(link2 + "<p style='" + markdown_style_h1 +
                  "' >" + "Developed by : " + "</p>", unsafe_allow_html=True)
 sidebar.text("")
 
-sidebar.markdown("<a href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#000066;vertical-align:middle;margin-right:1em;color:white;position:static;left:10px;'>AM</a>", unsafe_allow_html=True)
-
-sidebar.markdown("<a href='https://www.linkedin.com/in/abhay-dhiman-409378191/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#800080;vertical-align:middle;margin-right:1em;color:white;position:static;margin-left:60px;margin-top:-115px;'>AD</a>", unsafe_allow_html=True)
-
-sidebar.markdown("<a href='https://www.linkedin.com/in/aaditya-singhal-a46720192/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#00b33c;vertical-align:middle;margin-right:1em;color:white;position:static;margin-left:120px;margin-top:-193px'>AS</a>", unsafe_allow_html=True)
+sidebar.markdown("<p><a href='https://www.linkedin.com/in/ayush-malik-2252b7199/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#000066;vertical-align:middle;color:white;'>AM</a>\
+ <a href='https://www.linkedin.com/in/abhay-dhiman-409378191/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#800080;vertical-align:middle;color:white;'>AD</a>\
+ <a href='https://www.linkedin.com/in/aaditya-singhal-a46720192/' target='_blank' style='display:inline-block;font-size:1.3em;width:2.5em;height:2.5em;line-height:2.5em;text-align:center;border-radius:50%;background:#00b33c;vertical-align:middle;margin-right:1em;color:white;'>AS</a></p>"
+ , unsafe_allow_html=True)
 
 sidebar.markdown(
-    "<p style='position: static; left:200px; margin-top:-87px; font-size:20px; font-weight:800;'>@Pro_Coders</p>", unsafe_allow_html=True)
+     "<p style='position: static; left:200px; font-size:20px; font-weight:800;'>@Pro_Coders</p>", unsafe_allow_html=True)
 
 sidebar.markdown(
     "<a href='https://github.com/Ayush-Malik/basic_ML_model_building_assistant_for_regression_and_classification_problems/tree/streamlit_autoML' target='_blank'>" + image1 + "</a>",
