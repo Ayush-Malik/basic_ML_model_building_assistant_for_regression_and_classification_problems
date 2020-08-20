@@ -99,18 +99,29 @@ class Models:
 def acc_measure_cls(y_test, y_pred):
     acc = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred , average = 'micro')
-    # roc_auc = roc_auc_score(y_test, y_pred , multi_class = 'ovr' )
-    write("Accuracy Score:- ", acc)
-    write("F1 Score:- ", f1)
-    # write("ROC AUC Score:- ", roc_auc)
+    try:
+        roc_auc = roc_auc_score(y_test, y_pred)
+        write("Accuracy Score:- ", acc)
+        write("F1 Score:- ", f1)
+        write("ROC AUC Score:- ", roc_auc)
+    except:    
+        write("Accuracy Score:- ", acc)
+        write("F1 Score:- ", f1)
+        write("ROC AUC Score can't be shown as target feature is of multiclass")
+
 
 def acc_measure_reg(y_test, y_pred):
     r2 = r2_score(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
-    msle = mean_squared_log_error(y_test, y_pred)
-    write("R2 Score:- ", r2)
-    write("Mean Squared Error:- ", mse)
-    write("Mean Squared Log Error:- ", msle)
+    try:
+        msle = mean_squared_log_error(y_test, y_pred)
+        write("R2 Score:- ", r2)
+        write("Mean Squared Error:- ", mse)
+        write("Mean Squared Log Error:- ", msle)
+    except:
+        write("R2 Score:- ", r2)
+        write("Mean Squared Error:- ", mse)
+        write("MSLE can't be shown as there might be some negative values present in prediction dataset.")
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
