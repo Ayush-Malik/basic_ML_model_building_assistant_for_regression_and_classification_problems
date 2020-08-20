@@ -39,16 +39,18 @@ def Home():
         plot = features_overview_provider(df)
         plotly_chart(plot)
 
-        # Missing values counter
-        markdown_type_2 = "The Missing Values and Strategey :"
-        Cool_Data_Printer(markdown_type_2=markdown_type_2,
-                          write_this=null_value(df))
-
         # Visualising the missing values
         markdown_type_1 = "Heatmap for null values"
         plot = heatmap_generator(df)
-        Cool_Plot_Printer(plot, markdown_type_1=markdown_type_1,
-                          plot_print_type='plotly_chart')
+        
+        if plot is not None:
+            # Missing values counter
+            markdown_type_2 = "The Missing Values and Strategey :"
+            Cool_Data_Printer(markdown_type_2=markdown_type_2,
+                            write_this=null_value(df))
+
+            Cool_Plot_Printer(plot, markdown_type_1=markdown_type_1,
+                            plot_print_type='plotly_chart')
 
         # Finding imbalanced features
         imbalanced_features_manager(df)
