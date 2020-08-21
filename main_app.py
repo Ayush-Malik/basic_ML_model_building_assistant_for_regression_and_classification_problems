@@ -2,9 +2,14 @@ from streamlit import *
 from main_app_functions import *
 import base64
 import os
-import SessionState
+# import SessionState
+from st_demo_settings import *
 
-session_state = SessionState.get(df="")
+# session_state = SessionState.get(df="")
+# session_state = _SessionState()
+df = ""
+session_state = get_state()
+# session_state.__setitem__("df" , "")
 
 
 link2 = "<link href='https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,700&display=swap' rel='stylesheet'>"
@@ -58,7 +63,7 @@ sidebar.markdown(
 
 
 if choice == "Home":  # For Navigating to Home Page
-    session_state.df = Home()
+    session_state.__setitem__("new_df" , Home() ) 
 
 elif choice == "EDA":  # For Navigating to EDA Page only when there's no null values in dataframe
 
@@ -68,7 +73,8 @@ elif choice == "EDA":  # For Navigating to EDA Page only when there's no null va
 
     # df = pd.read_csv('update.csv')
 
-    df = session_state.df
+    # df = session_state.df
+    df = session_state.__getitem__("new_df")
 
     if type(df) != type(pd.DataFrame()):
         error("Oops you didn't have uploaded a DataFrame yet!!!")
@@ -91,7 +97,16 @@ elif choice == 'Model Building':  # For Navigating to Model Building page only w
     text("")
     text("")
 
-    df = session_state.df
+    # df = session_state.df
+    df = session_state.__getitem__("new_df")
+    print()
+    print()
+    print(df)
+    print()
+    print()
+    print()
+
+
 
     if type(df) != type(pd.DataFrame()):
         error("Oops you didn't have uploaded a DataFrame yet!!!")
@@ -110,3 +125,5 @@ elif choice == 'Model Building':  # For Navigating to Model Building page only w
 
 elif choice == 'About Us':  # For Navigating to About Us Page
     About_Us()
+
+session_state.sync()
