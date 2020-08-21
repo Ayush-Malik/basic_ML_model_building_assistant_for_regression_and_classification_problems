@@ -8,8 +8,8 @@
 
 
 ## What is ML Automator?
-Ml Automator is an open source web App built using Streamlit that makes life easier for Data Science Community. It helps data scientists to perform Data-Preprocessing, EDA and Model Bulding quickly and efficiently. ML Automator is a website which serves from data preprocessing to model building functionalties etc. in a super easy way.The simplicity of Ml Automator is inspired by the hectic work of performing many tasks in ML bodel building again and again!!.
-ML Automator is a great web App which simplifies the machine learning tasks for data scientists.This website is helping data scientists and also helping individuals who want to start exploring the field of data science, having no prior knowledge in this field. This website is simple to use and can be used to train a ML model on a dataset very easily.
+Ml Automator is an open source web App built using Streamlit that makes life easier for Data Science Community. It helps data scientists to perform Data-Preprocessing, EDA and Model Bulding quickly and efficiently. ML Automator is a web App which serves from data preprocessing to model building functionalties etc. in a super easy way.The simplicity of Ml Automator is inspired by the hectic work of performing many tasks in ML bodel building again and again!!.
+ML Automator is a great web App which simplifies the machine learning tasks for data scientists.This web App is helping data scientists and also helping individuals who want to start exploring the field of data science, having no prior knowledge in this field. This web App is simple to use and can be used to train a ML model on a dataset very easily.
 
 
 
