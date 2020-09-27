@@ -8,6 +8,7 @@ from xgboost import XGBClassifier, XGBRegressor
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, r2_score, mean_squared_error, mean_squared_log_error
 from streamlit import *
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
 
 
 models_mapper = {
@@ -29,19 +30,40 @@ models_mapper = {
 }
 
 
-def Model_Trainer(Model, model_name, problem, X, y):
+param_test_dict = {
+    "LogisticRegression()": {"penalty": ['l1', 'l2'],
+                            "C": [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000],
+                            "solver": ['newton-cg', 'liblinear', 'saga'],
+                            "max_iter": [100, 200, 300, 400]
+                        },
+
+    "XGBClassifier()": {"gamma": [i/10.0 for i in range(0, 5)],
+                        "learning_rate": [0.05, 0.1, 0.2, 0.3],
+                        "max_depth": [5, 6, 7, 9],
+                        "min_child_weight": [3, 5, 6],
+                        "n_estimators": [num for num in range(0, 1000, 100)],
+                        },
+}
+
+
+def Model_Trainer(Model, model_name, problem, X, y, hypertunnig):
     X_train, X_test = X[0], X[1]
     y_train, y_test = y[0], y[1]
-    
+
     Model.fit(X_train, y_train)
     y_pred = Model.predict(X_test)
-    info(model_name)
+    print(model_name)
 
-    if problem.lower() == 'regression':
-        acc_measure = acc_measure_reg(y_test, y_pred)
-    else:
-        acc_measure = acc_measure_cls(y_test, y_pred)
-    return y_pred
+    if hypertunnig == True:
+        y_pred = ht_model_runner(X, y, problem, Model)
+        # y_pred = HO_object.output()
+        return y_pred
+    elif hypertunnig == False:
+        if problem.lower() == 'regression':
+            acc_measure = acc_measure_reg(y_test, y_pred)
+        else:
+            acc_measure = acc_measure_cls(y_test, y_pred)
+        return y_pred
 
 
 class Models:
@@ -65,28 +87,29 @@ class Models:
         self.dict = dict()
 
 
-    def model_call(self):
+    def model_call(self, hypertunnig=False):
         '''
         model_call makes different function calls according to the Attributes received through model_list.
         '''
         if self.model_list == None:
             # To track for model_list is empty or not
-            error("No model selected; model_list got None Attribute")
+            print("No model selected; model_list got None Attribute")
         
         elif type(self.model_list) != list:
             # To track type for model_list
-            error(f"Could not recognize {type(self.model_list)} object; List object must be passed")
+            print(f"Could not recognize {type(self.model_list)} object; List object must be passed")
         
         else:
             # For calling respective functions according to the model_list
             #success("Working On It! Please Wait For a While")
-            text("")
+            print("")
             
             for model_name in self.model_list:
                 Model = models_mapper[model_name]
                 pred_output = Model_Trainer(
                     Model, model_name,
-                    self.problem, self.X, self.y
+                    self.problem, self.X, self.y,
+                    hypertunnig
                 )
                 self.dict[model_name] = pred_output
 
@@ -101,13 +124,13 @@ def acc_measure_cls(y_test, y_pred):
     f1 = f1_score(y_test, y_pred , average = 'micro')
     try:
         roc_auc = roc_auc_score(y_test, y_pred)
-        write("Accuracy Score:- ", acc)
-        write("F1 Score:- ", f1)
-        write("ROC AUC Score:- ", roc_auc)
-    except:    
-        write("Accuracy Score:- ", acc)
-        write("F1 Score:- ", f1)
-        write("ROC AUC Score can't be shown because target feature is of multiclass")
+        print("Accuracy Score:- ", acc)
+        print("F1 Score:- ", f1)
+        print("ROC AUC Score:- ", roc_auc)
+    except:
+        print("Accuracy Score:- ", acc)
+        print("F1 Score:- ", f1)
+        print("ROC AUC Score can't be shown because target feature is of multiclass")
 
 
 def acc_measure_reg(y_test, y_pred):
@@ -115,13 +138,13 @@ def acc_measure_reg(y_test, y_pred):
     mse = mean_squared_error(y_test, y_pred)
     try:
         msle = mean_squared_log_error(y_test, y_pred)
-        write("R2 Score:- ", r2)
-        write("Mean Squared Error:- ", mse)
-        write("Mean Squared Log Error:- ", msle)
+        print("R2 Score:- ", r2)
+        print("Mean Squared Error:- ", mse)
+        print("Mean Squared Log Error:- ", msle)
     except:
-        write("R2 Score:- ", r2)
-        write("Mean Squared Error:- ", mse)
-        write("MSLE can't be shown as there might be some negative values present in prediction dataset.")
+        print("R2 Score:- ", r2)
+        print("Mean Squared Error:- ", mse)
+        print("MSLE can't be shown as there might be some negative values present in prediction dataset.")
 
 
 # print(Models("x", "y", ["LinearRegression"]).model_call())
@@ -155,3 +178,58 @@ def x_y_maker(target_feature, train, test):
     x_test = test.drop(target_feature , axis = 1)
     x_test = x_test.values
     return(x_train, x_test, y_train, y_test)
+
+
+class HyperparameterOptimization:
+    def __init__(self, X_list, y_list, problem, Model):
+        self.X_train, self.X_test = X_list[0], X_list[1]
+        self.y_train, self.y_test = y_list[0], y_list[1]
+        self.problem = problem
+        self.Model = Model
+        self.param_test = param_test_dict[str(Model)]
+
+    def scoring(self):
+        if self.problem.lower() == 'regression':
+            self.score = "r2"
+        else:
+            self.score = "accuracy"
+
+    def param(self):
+        pass
+
+    def gridsearchcv(self):
+        gsearch = GridSearchCV(estimator = self.Model,
+                                param_grid = self.param_test,
+                                scoring = self.score,
+                                n_jobs = -1,
+                                # iid = False,
+                                verbose = 1,
+                                # cv = 5
+                            )
+        gsearch.fit(self.X_train, self.y_train)
+        self.best_estimator = gsearch.best_estimator_
+        print(self.best_estimator)
+
+    def ht_model(self):
+        classifier = self.best_estimator
+        classifier.fit(self.X_train, self.y_train)
+        self.y_pred = classifier.predict(self.X_test)
+
+    def acc_check(self):
+        if self.problem.lower() == "regression":
+            acc_measure = acc_measure_reg(self.y_test, self.y_pred)
+        else:
+            acc_measure = acc_measure_cls(self.y_test, self.y_pred)
+
+    def output(self):
+        return self.y_pred
+
+
+def ht_model_runner(X, y, problem, Model):
+    HO_object = HyperparameterOptimization(X, y, problem, Model)
+    HO_object.scoring()
+    HO_object.gridsearchcv()
+    HO_object.ht_model()
+    HO_object.acc_check()
+    y_pred = HO_object.output()
+    return y_pred

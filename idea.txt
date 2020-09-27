@@ -1,0 +1,83 @@
+ml automator-->
+	1. the ideas:-
+		| dark/ light theme toggle button
+		| footer, header, sidebar constant/ extendeble
+		| organise static files--- main focus on images
+		| commenting with examples
+		| testcase along with bugs
+		| track the task daily(sat/sun)
+		| task must be independent(front-end not depend on back-end) **
+		| reusable code **
+		| download final result in csv format
+		| jupyter notebook
+		| the task that are performed show usefull links associated with that task.
+		| chatbot:- text to speech and vice versa.
+		| test your knowledge --- mcq, read articles, questions.
+		| search dataset and scrapping that data from kaggle.
+		| pycaret.
+		| tracking best  parameters/ tech for any particular dataset. and applying the ml models to learn from them so that we can do better in automation...
+		| upload data directly or upload data with train, valid and test seperatly.
+		| automatically applying the ml techs even after the user left the site and if the results are better then sending the result to that user via email.
+	2. apps:-
+		1. default home page:- 
+		     | latest news related to ml
+		     | latest blogs related to ml
+		     | main features
+		     | plan -- free/ paid --- number of plan/ limitation must be dynamic
+		     | faq
+		     | our team
+
+		2. authentication:- email(login, signup)
+		     | location.
+		     | full name.
+		     | email.
+		     | password.
+		     | confirm password.
+		     | signup, login :-- use same page.
+		     | forgot password.
+		     | show default home page when clicked on logo.
+		     | proffession/ status-- student, professor
+		     | login/signup with github/ kaggle
+		     | location based email sending.
+
+		3. main page:- data upload
+		     | info of the user's plan
+		     | manual or automate completly
+		     | select problem statement
+		     | data preprocessing
+			| datatypes
+			| columns
+			| null values -- fill, drop
+			| normalizing/ standardize -- acc to model
+			| outliers
+			| value counts
+			| tracking cat/ num cols
+			| encoding
+			| imbalance feature
+		     | model selection
+			| appropriate model selection acc to loss/ acc
+			| hypertunning
+			| stacking
+			| blending
+			| voting tech
+			| pipelines
+			| ann
+		     | EDA
+			| diff plots that sit...
+		     | feature engineering
+			| linear combinations
+			| date, location, name columns
+			| grouping data acc to cat feature and feed to diff models
+			| manipulate any feat on some basis.
+			| dimensionality reduction.
+			
+		     | feature selection
+			| if two feat are directly prop to each other then one of them can be removed without any tension.
+			| getting corr and selecting the feat acc to that.
+			| PCA.
+
+
+
+
+
+
