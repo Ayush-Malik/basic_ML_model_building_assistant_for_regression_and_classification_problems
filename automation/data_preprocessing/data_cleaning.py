@@ -43,12 +43,46 @@ class Basic:
     def unique(self, column):
         return self.data[column].unique()
 
+    def unique_prcntg(self, column):
+        return round((len(self.unique(column)) / self.data_len)*100, 2)
+
     def isnull(self):
         return self.data.isnull()
 
-    def isnull_sum(self):
+    def isnull_sum(self, column=None):
         ''' return sum of null values present in the dataset. '''
+        if column:
+            return self.isnull().sum()[column]
         return self.isnull().sum()
+
+    @property
+    def data_len(self):
+        ''' return the total length of the dataset'''
+        return self.shape[0]
+
+    def isnull_sum_prcntg(self, column=None):
+        ''' return the percentage of sum of null values present in the dataset. '''
+        if column:
+            return round((self.isnull_sum(column) / self.data_len)*100, 2)
+        return round((self.isnull_sum / self.data_len)*100, 2)
+
+    def drop(self, column, **kwargs):
+        if not isinstance(column, list):
+            column = [column]
+        return self.data.drop(column, **kwargs)
+
+    def central_tendency_finder(self, column_name, measure):
+        ''' return the measure(mean, median, mode) of selected column in the dataset
+        according to the parameter(measure) is passed. '''
+        measure = measure.lower()
+        if measure == "mode":
+            return self.data[column_name].mode()[0]
+        elif measure == "mean":
+            return self.data[column_name].mean()
+        elif measure == "median":
+            return self.data[column_name].median()
+        else:
+            raise AttributeError(f"Wrong attribute is passed; {measure} measure is not recognized")
 
 
 class Columns(Basic):
@@ -93,6 +127,10 @@ class Columns(Basic):
     @property
     def column_name(self):
         return list(self.data.columns)
+
+    def col_len(self):
+        ''' return the total length of columns of the dataset '''
+        return self.shape[1]
 
     def cat_col(self):
         ''' Keeps track of only categorical features of the dataset '''
@@ -184,8 +222,8 @@ class DataType(Columns):
             features_type = self.track_col().items()
         
         for col_name, col_type in features_type:
-            if col_type == 'int64' or col_type == 'int32':
-                if len(self.unique(col_name)) <= 3:
+            if 'int' in str(col_type):
+                if self.unique_prcntg(col_name) <= 5:
                     # categorial feature; numerical type
                     cat_list.append(col_name)
                 else:
@@ -195,7 +233,7 @@ class DataType(Columns):
             elif col_type == "object":
                 # Categorial feature; non-numeric type
                 cat_list.append(col_name)
-            elif col_type == 'float64' or col_type == 'float32':
+            elif 'float' in str(col_type):
                 # Numerical feature; continous type
                 num_list.append(col_name)
             else:
@@ -207,9 +245,35 @@ class DataType(Columns):
         )
 
 
-class NullCount(Columns):
-    def null_count(self):
-        self.isnull()
+class Null(DataType):
+    def auto_null_filler(self):
+        done = None
+        cntrl_tndncy_meas = None
+        for column in self.column_name:
+            null_percentage = self.isnull_sum_prcntg(column)
+            if null_percentage == 0:
+                done = 'skipped'
+            elif  null_percentage <= 40:
+                if self.is_cat([column]):
+                    cntrl_tndncy_meas = self.central_tendency_finder(column, 'mode')
+                else:
+                    cntrl_tndncy_meas = self.central_tendency_finder(column, 'mean')
+                done = 'filled'
+                self.null_filler(column, cntrl_tndncy_meas)
+            else:
+                done = 'dropped'
+                self.drop(column, axis=1, inplace=True)
+            
+            if done == "skipped":
+                yield(f"The {column} column is {done} as it didn't have any kind of null values")
+            elif done == "dropped":
+                yield(f"The {column} column is {done} as it has {null_percentage}% of the null values.")
+            else:
+                yield(f"The {column} column is {done} with the value of {cntrl_tndncy_meas}")
+
+    def null_filler(self, column_name, value):
+        ''' Fill the null values of the feature with the attribute(value) passed '''
+        self.data[column_name] = self.data[column_name].fillna(value)
 
 
 # -------------------------------------
@@ -218,24 +282,75 @@ class NullCount(Columns):
 
 
 # ---------- only one data ------------
-print()
+print('-'*50)
+print('\t \t Testing no. 1')
+print('-'*50)
 df = pd.read_csv(r'../../example_datasets/titanic.csv')
 
 # ------- defining the object ---------
-df_obj = DataType(df)
+df_obj = Null(df)
+print()
+
+# ---------- column names -------------
+print('---------- column names -------------')
+print(df_obj.column_name)
 print()
 
 # --------- tracking column -----------
+print('-------- tracking column -----------')
 print(df_obj.track_col())
 print()
 
+# ----- only categorical column -------
+print('----- only categorical column -------')
+print(df_obj.cat_col())
+print()
+
+# ------ only numerical column --------
+print('------ only numerical column --------')
+print(df_obj.num_col())
+print()
+
+# --------- is cat column? ------------
+print('--------- is cat column? ------------')
+print(df_obj.is_cat(["Name", "Age"]))
+print()
+
+# --------- is num column? ------------
+print('--------- is num column? ------------')
+print(df_obj.is_num(["Name", "Age"]))
+print()
+
 # ------- head of the dataset ---------
+print('------- head of the dataset ---------')
 print(df_obj.head())
 print()
 
 # ------- shape of the dataset --------
-print(DataType(df).shape)
+print('------- shape of the dataset --------')
+print(df_obj.shape)
 print()
+
+# --------- checking isnull -----------
+print('--------- checking isnull -----------')
+print(df_obj.isnull())
+print()
+
+# ----------- isnull sum --------------
+print('----------- isnull sum --------------')
+print(df_obj.isnull_sum())
+print()
+
+# --------- auto isnull filler --------
+print('--------- auto isnull filler --------')
+for _ in df_obj.auto_null_filler():
+    print(_)
+
+# ----------- isnull sum --------------
+print('----------- isnull sum --------------')
+print(df_obj.isnull_sum())
+print()
+
 
 
 # -------------------------------------
@@ -245,7 +360,9 @@ print()
 
 # ----------- two datas ---------------
 
-print()
+print('-'*50)
+print('\t \t Testing no. 2')
+print('-'*50)
 data = {'Name': ['Tom', 'nick', 'krish', 'jack'], 'Age': [20, 21, 19, 18]}
 data2 = {'Name':['galla', 'uba', 'lilu', 'lala'], 'Age':[34, 24, 1, 69]}
 
@@ -254,39 +371,54 @@ df_obj2 = DataType(*[pd.DataFrame(data), pd.DataFrame(data2)])
 print()
 
 # ---------- column names -------------
+print('---------- column names -------------')
 print(df_obj2.column_name)
 print()
 
 # --------- tracking column -----------
+print('-------- tracking column -----------')
 print(df_obj2.track_col())
 print()
 
 # ----- only categorical column -------
+print('----- only categorical column -------')
 print(df_obj2.cat_col())
 print()
 
 # ------ only numerical column --------
+print('------ only numerical column --------')
 print(df_obj2.num_col())
 print()
 
 # --------- is cat column? ------------
+print('--------- is cat column? ------------')
 print(df_obj2.is_cat(["Name", "Age"]))
 print()
 
 # --------- is num column? ------------
+print('--------- is num column? ------------')
 print(df_obj2.is_num(["Name", "Age"]))
 print()
 
 # ------- head of the dataset ---------
+print('------- head of the dataset ---------')
 print(df_obj2.head())
 print()
 
+# ------- shape of the dataset --------
+print('------- shape of the dataset --------')
+print(df_obj2.shape)
+print()
+
 # --------- checking isnull -----------
+print('--------- checking isnull -----------')
 print(df_obj2.isnull())
 print()
 
 # ----------- isnull sum --------------
+print('----------- isnull sum --------------')
 print(df_obj2.isnull_sum())
+print()
 
 
 
