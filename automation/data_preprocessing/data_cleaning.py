@@ -8,6 +8,7 @@
 '''
 import pandas as pd
 import numpy as np
+import scipy.stats as stats
 
 
 class Basic:
@@ -83,6 +84,32 @@ class Basic:
             return self.data[column_name].median()
         else:
             raise AttributeError(f"Wrong attribute is passed; {measure} measure is not recognized")
+
+    def inter_quartile_range(self, column_name):
+        """
+        Returns the inter quartile range for any particular feature.
+        The inter quartile range is the difference b/w Q3 and Q1 i.e.
+        75% - 25% and basically its the midspread of the data.
+        """
+        return self.data[column_name].apply(stats.iqr)
+
+    def Q1(self, column_name):
+        """
+        Returns the first quantile for the column of the dataset.
+        """
+        return self.data[column_name].quantile(q=.25)
+
+    def Q3(self, column_name):
+        """
+        Returns the third quantile for the column of the dataset.
+        """
+        return self.data[column_name].quantile(q=.75)
+
+    def col_minval(self, column_name):
+        """
+        Returns the min value of the feature
+        """
+        return self.data[column_name].min()
 
 
 class Columns(Basic):
@@ -245,8 +272,8 @@ class DataType(Columns):
         )
 
 
-class Null(DataType):
-    def auto_null_filler(self):
+class DataCleaner(DataType):
+    def auto_process(self):
         done = None
         cntrl_tndncy_meas = None
         for column in self.column_name:
@@ -271,6 +298,19 @@ class Null(DataType):
             else:
                 yield(f"The {column} column is {done} with the value of {cntrl_tndncy_meas}")
 
+    def manual_process(self, column_name, parameter):
+        """
+        This takes a parameter from the user and according to that it process the data.
+        
+        parameter:- input type must be of str. It takes one of the (Drop, mean, median, mode)
+        value.
+        """
+        if "drop" in parameter:
+            self.drop(column_name, axis=1, inplace=True)
+        else:
+            value = self.central_tendency_finder(column_name, parameter)
+            self.null_filler(column_name, value)
+
     def null_filler(self, column_name, value):
         ''' Fill the null values of the feature with the attribute(value) passed '''
         self.data[column_name] = self.data[column_name].fillna(value)
@@ -288,7 +328,7 @@ print('-'*50)
 df = pd.read_csv(r'../../example_datasets/titanic.csv')
 
 # ------- defining the object ---------
-df_obj = Null(df)
+df_obj = DataCleaner(df)
 print()
 
 # ---------- column names -------------
@@ -341,10 +381,16 @@ print('----------- isnull sum --------------')
 print(df_obj.isnull_sum())
 print()
 
-# --------- auto isnull filler --------
-print('--------- auto isnull filler --------')
-for _ in df_obj.auto_null_filler():
+# -------- manual data cleaner --------
+print('-------- manual data cleaner --------')
+print(df_obj.manual_process('Cabin', 'drop'))
+print()
+
+# --------- auto data cleaner ---------
+print('--------- auto data cleaner ---------')
+for _ in df_obj.auto_process():
     print(_)
+print()
 
 # ----------- isnull sum --------------
 print('----------- isnull sum --------------')
@@ -367,7 +413,7 @@ data = {'Name': ['Tom', 'nick', 'krish', 'jack'], 'Age': [20, 21, 19, 18]}
 data2 = {'Name':['galla', 'uba', 'lilu', 'lala'], 'Age':[34, 24, 1, 69]}
 
 # ------- defining the object ---------
-df_obj2 = DataType(*[pd.DataFrame(data), pd.DataFrame(data2)])
+df_obj2 = DataCleaner(*[pd.DataFrame(data), pd.DataFrame(data2)])
 print()
 
 # ---------- column names -------------
