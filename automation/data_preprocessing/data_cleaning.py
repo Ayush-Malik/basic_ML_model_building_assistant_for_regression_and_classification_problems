@@ -250,7 +250,7 @@ class DataType(Columns):
         
         for col_name, col_type in features_type:
             if 'int' in str(col_type):
-                if self.unique_prcntg(col_name) <= 5:
+                if self.unique_prcntg(col_name) <= 0.5:
                     # categorial feature; numerical type
                     cat_list.append(col_name)
                 else:
