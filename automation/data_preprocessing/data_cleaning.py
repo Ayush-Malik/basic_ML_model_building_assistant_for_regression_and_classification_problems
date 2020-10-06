@@ -10,6 +10,12 @@ import pandas as pd
 import numpy as np
 import scipy.stats as stats
 
+__all__ = [
+    "Basic",
+    "Columns",
+    "DataType",
+    "DataCleaner",
+]
 
 class Basic:
     '''This is the base class of ml-automator that serves various impartant basic task 
@@ -46,6 +52,15 @@ class Basic:
 
     def unique_prcntg(self, column):
         return round((len(self.unique(column)) / self.data_len)*100, 2)
+
+    def value_count(self, column):
+        return self.get_col(column).value_count()
+
+    def map(self, column, dict_obj):
+        return self.get_col(column).map(dict_obj)
+
+    def get_dummies(self, column):
+        return pd.get_dummies(self.data(), columns=[column], drop_first=True)
 
     def isnull(self):
         return self.data.isnull()
