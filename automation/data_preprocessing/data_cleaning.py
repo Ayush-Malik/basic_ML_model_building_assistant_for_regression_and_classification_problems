@@ -42,7 +42,7 @@ class Basic:
         return self.data.shape
 
     def unique(self, column):
-        return self.data[column].unique()
+        return self.get_col(column).unique()
 
     def unique_prcntg(self, column):
         return round((len(self.unique(column)) / self.data_len)*100, 2)
@@ -71,6 +71,10 @@ class Basic:
         if not isinstance(column, list):
             column = [column]
         return self.data.drop(column, **kwargs)
+
+    @staticmethod
+    def dataframe(*args, **kwargs):
+        return pd.DataFrame(*args, **kwargs)
 
     def central_tendency_finder(self, column_name, measure):
         ''' return the measure(mean, median, mode) of selected column in the dataset
@@ -154,6 +158,9 @@ class Columns(Basic):
     @property
     def column_name(self):
         return list(self.data.columns)
+
+    def get_col(self, column):
+        return self.data[column]
 
     def col_len(self):
         ''' return the total length of columns of the dataset '''
@@ -311,6 +318,22 @@ class DataCleaner(DataType):
             value = self.central_tendency_finder(column_name, parameter)
             self.null_filler(column_name, value)
 
+    def id_remover(self):
+        for column in self.num_col():
+            is_id = False
+            
+            if "id" in column.lower():
+                is_id = True
+            
+            if is_id:
+                prcntage = self.unique_prcntg(column)
+                if prcntage >= 80:
+                    self.id_col = self.dataframe(self.get_col(column), columns=[column])
+                    self.drop(column=column, axis=1, inplace=True)
+                    return self.id_col
+                return f"Is the {column} column is the ID for the dataset."
+        return "There is no Id column present in the dataset."
+
     def null_filler(self, column_name, value):
         ''' Fill the null values of the feature with the attribute(value) passed '''
         self.data[column_name] = self.data[column_name].fillna(value)
@@ -397,6 +420,20 @@ print('----------- isnull sum --------------')
 print(df_obj.isnull_sum())
 print()
 
+# ----------- id remover --------------
+print('----------- id remover --------------')
+print(df_obj.id_remover())
+print()
+
+# ----------- id remover --------------
+print('----------- id remover --------------')
+print(df_obj.id_remover())
+print()
+
+# ------- head of the dataset ---------
+print('------- head of the dataset ---------')
+print(df_obj.head())
+print()
 
 
 # -------------------------------------
