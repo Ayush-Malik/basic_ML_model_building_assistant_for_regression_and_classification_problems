@@ -1,5 +1,10 @@
+# import sys
+# sys.path.append(
+#     r'E:\_ml_automator\basic_ML_model_building_assistant_for_regression_and_classification_problems')
+
 from pandas.core.arrays.sparse import dtype
-import DataCleaner  # Must specify the correct path use init.py file.
+
+from automation import DataCleaner  # Must specify the correct path use init.py file.
 import pandas as pd
 
 # -------------------------------------
@@ -7,7 +12,8 @@ import pandas as pd
 # -------------------------------------
 
 # ---------- only one data ------------
-df = pd.read_csv(r'../../../example_datasets/titanic.csv')
+df = pd.read_csv(
+    r'E:\_ml_automator\basic_ML_model_building_assistant_for_regression_and_classification_problems\example_datasets\titanic.csv')
 
 # ------- defining the object ---------
 df_obj = DataCleaner(df)
