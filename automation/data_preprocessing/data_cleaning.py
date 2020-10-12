@@ -53,8 +53,8 @@ class Basic:
     def unique_prcntg(self, column):
         return round((len(self.unique(column)) / self.data_len)*100, 2)
 
-    def value_count(self, column):
-        return self.get_col(column).value_count()
+    def value_counts(self, column):
+        return self.get_col(column).value_counts()
 
     def map(self, column, dict_obj):
         return self.get_col(column).map(dict_obj)
@@ -353,6 +353,7 @@ class DataCleaner(DataType):
         ''' Fill the null values of the feature with the attribute(value) passed '''
         self.data[column_name] = self.data[column_name].fillna(value)
 
+<<<<<<< HEAD
 
 # -------------------------------------
 #               Testing
@@ -526,22 +527,3 @@ print()
 # concat option---> done..
 # column_name option ---> done..
 # datatype_tracker ---> done..
-
-# class new(pandas):
-#     def __init__(self, df):
-#         pass
-
-# class Base(pd.DataFrame):
-#     def __init__(self , *args):
-#         pd.DataFrame.__init__(self, *args)
-
-
-# df = Base(df)
-# print(df.head())
-
-# class New(Base):
-#     def new(self):
-#         self.head()
-
-# df = New(df)
-# print(df.new())
