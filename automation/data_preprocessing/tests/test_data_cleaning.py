@@ -13,7 +13,7 @@ import pandas as pd
 
 # ---------- only one data ------------
 df = pd.read_csv(
-    r'E:\_ml_automator\basic_ML_model_building_assistant_for_regression_and_classification_problems\example_datasets\titanic.csv')
+    r'C:\Users\user\Desktop\auto\example_datasets\titanic.csv')
 
 # ------- defining the object ---------
 df_obj = DataCleaner(df)
