@@ -8,6 +8,7 @@
 '''
 import pandas as pd
 import numpy as np
+from pandas.core.frame import DataFrame
 import scipy.stats as stats
 
 __all__ = [
@@ -28,8 +29,22 @@ class Basic:
     3. display shape of the dataset/ dataframe.
     4. getting the unique values of any particular column of the dataset passed as
     a parameter.
-    5. getting isnull values of the dataset/ dataframe.
-    6. getting sum of isnull values of the dataset/dataframe.
+    5. getting the percentage of unique values of a particular column of the dataset.
+    6. getting the value counts of a particular column of the dataset.
+    7. map the values in dict object into the column parameter passed.
+    8. also has get_dummies(same as pandas).
+    9. getting isnull values of the dataset/ dataframe.
+    10. getting sum of isnull values of the dataset/dataframe.
+    11. getting the total length of the dataset.
+    12. getting isnull sum percentage for any particular column.
+    13. any particular column can also be drop by using `drop` method.
+    14. also has capability of creating a dataframe.
+    15. central tendency finder is also here that can be used to find (mean, median, or mode)
+    for any particular column.
+    16. inter quartile range for any numeric column present in the dataset.
+    17. first quantile for any numeric column present in the dataset.
+    18. third quantile for any numeric column present in the dataset.
+    19. minimum value of any column.
     '''
     def __init__(self):
         raise NotImplementedError("Not accessible directly")
@@ -41,10 +56,12 @@ class Basic:
         return self.data
 
     def head(self, value=5):
+        ''' Returns head of the dataset. '''
         return self.data.head(value)
 
     @property
     def shape(self):
+        ''' Returns the shape of the dataset. '''
         return self.data.shape
 
     def unique(self, column):
@@ -60,9 +77,12 @@ class Basic:
         return self.get_col(column).map(dict_obj)
 
     def get_dummies(self, column):
+        ''' limited version of pd.get_dummies... Only creates dummy variables for the column
+        parameter passed. '''
         return pd.get_dummies(self.data(), columns=[column], drop_first=True)
 
-    def isnull(self):
+    def isnull(self) -> DataFrame:
+        ''' return the isnull value from dataframe '''
         return self.data.isnull()
 
     def isnull_sum(self, column=None):
@@ -77,18 +97,20 @@ class Basic:
         return self.shape[0]
 
     def isnull_sum_prcntg(self, column=None):
-        ''' return the percentage of sum of null values present in the dataset. '''
+        ''' Return the percentage of sum of null values present in the dataset. '''
         if column:
             return round((self.isnull_sum(column) / self.data_len)*100, 2)
         return round((self.isnull_sum / self.data_len)*100, 2)
 
     def drop(self, column, **kwargs):
+        ''' Can be used to drop any particular feature from the dataset. '''
         if not isinstance(column, list):
             column = [column]
         return self.data.drop(column, **kwargs)
 
     @staticmethod
     def dataframe(*args, **kwargs):
+        ''' Used to create a dataframe same as pd.DataFrame '''
         return pd.DataFrame(*args, **kwargs)
 
     def central_tendency_finder(self, column_name, measure):
@@ -164,6 +186,7 @@ class Columns(Basic):
     '''
 
     def __init__(self, *args):
+        ''' Used to take dataframe objects. '''
         if len(args) == 1:
             self.data = args[0]
         else:
@@ -172,9 +195,11 @@ class Columns(Basic):
 
     @property
     def column_name(self):
+        ''' returns name of all columns present in the dataset. '''
         return list(self.data.columns)
 
     def get_col(self, column):
+        ''' returns the values of specified column. '''
         return self.data[column]
 
     def col_len(self):
@@ -230,7 +255,7 @@ class Columns(Basic):
 class DataType(Columns):
     ''' Finds datatypes of every features and categorize the features accordingly into
     categorical or numerical features. '''
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         Columns.__init__(self, *args)
 
     def track_col(self, *args):
@@ -296,6 +321,9 @@ class DataType(Columns):
 
 class DataCleaner(DataType):
     def auto_process(self):
+        ''' This method automatically finds the best way for getting rid of columns
+        having null values in them. Either this method would delete the particular column or
+        just fill that with appropriate value. '''
         done = None
         cntrl_tndncy_meas = None
         for column in self.column_name:
@@ -320,7 +348,7 @@ class DataCleaner(DataType):
             else:
                 yield(f"The {column} column is {done} with the value of {cntrl_tndncy_meas}")
 
-    def manual_process(self, column_name, parameter):
+    def manual_process(self, column_name, parameter) -> None:
         """
         This takes a parameter from the user and according to that it process the data.
         
@@ -334,6 +362,8 @@ class DataCleaner(DataType):
             self.null_filler(column_name, value)
 
     def id_remover(self):
+        ''' This method is used to automatically remove id column from the dataframe.
+        It also returns the id column. '''
         for column in self.num_col():
             is_id = False
             
@@ -349,7 +379,7 @@ class DataCleaner(DataType):
                 return f"Is the {column} column is the ID for the dataset."
         return "There is no Id column present in the dataset."
 
-    def null_filler(self, column_name, value):
+    def null_filler(self, column_name, value) -> None:
         ''' Fill the null values of the feature with the attribute(value) passed '''
         self.data[column_name] = self.data[column_name].fillna(value)
 
