@@ -10,7 +10,7 @@ import pandas as pd
 # -------------------------------------
 
 df = pd.read_csv(
-    r'C:\Users\user\Desktop\auto\example_datasets\titanic.csv')
+    r'..\..\example_datasets\titanic.csv')
 
 # ------- defining the object ---------
 df_obj = DataCleaner(df)
