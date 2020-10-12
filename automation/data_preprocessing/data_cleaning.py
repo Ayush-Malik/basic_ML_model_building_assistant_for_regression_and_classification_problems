@@ -79,7 +79,7 @@ class Basic:
     def get_dummies(self, column):
         ''' limited version of pd.get_dummies... Only creates dummy variables for the column
         parameter passed. '''
-        return pd.get_dummies(self.data(), columns=[column], drop_first=True)
+        return pd.get_dummies(self.data, columns=[column], drop_first=True)
 
     def isnull(self) -> DataFrame:
         ''' return the isnull value from dataframe '''
@@ -117,12 +117,13 @@ class Basic:
         ''' return the measure(mean, median, mode) of selected column in the dataset
         according to the parameter(measure) is passed. '''
         measure = measure.lower()
+        column = self.get_col(column_name)
         if measure == "mode":
-            return self.data[column_name].mode()[0]
+            return column.mode()[0]
         elif measure == "mean":
-            return self.data[column_name].mean()
+            return column.mean()
         elif measure == "median":
-            return self.data[column_name].median()
+            return column.median()
         else:
             raise AttributeError(f"Wrong attribute is passed; {measure} measure is not recognized")
 
@@ -132,25 +133,25 @@ class Basic:
         The inter quartile range is the difference b/w Q3 and Q1 i.e.
         75% - 25% and basically its the midspread of the data.
         """
-        return self.data[column_name].apply(stats.iqr)
+        return self.get_col(column_name).apply(stats.iqr)
 
     def Q1(self, column_name):
         """
         Returns the first quantile for the column of the dataset.
         """
-        return self.data[column_name].quantile(q=.25)
+        return self.get_col(column_name).quantile(q=.25)
 
     def Q3(self, column_name):
         """
         Returns the third quantile for the column of the dataset.
         """
-        return self.data[column_name].quantile(q=.75)
+        return self.get_col(column_name).quantile(q=.75)
 
     def col_minval(self, column_name):
         """
         Returns the min value of the feature
         """
-        return self.data[column_name].min()
+        return self.get_col(column_name).min()
 
 
 class Columns(Basic):
@@ -381,7 +382,7 @@ class DataCleaner(DataType):
 
     def null_filler(self, column_name, value) -> None:
         ''' Fill the null values of the feature with the attribute(value) passed '''
-        self.data[column_name] = self.data[column_name].fillna(value)
+        self.data[column_name] = self.get_col(column_name).fillna(value)
 
 
 # must save the original data
