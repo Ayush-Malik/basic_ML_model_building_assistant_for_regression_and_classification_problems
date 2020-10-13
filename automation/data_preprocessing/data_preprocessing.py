@@ -1,10 +1,14 @@
-from automation import Basic, Columns, DataType, DataCleaner
+from automation import DataType
+import pandas as pd
 
+__all__ = [
+    "FeatTransform",
+]
 # track target feature also.
-class FeatTransform(Columns):
+class FeatTransform(DataType):
     def auto_encoder(self):
         for column in self.cat_col():
-            percentage = self.unique_prnctg(column)
+            percentage = self.unique_prcntg(column)
             if len(self.unique(column)) <= 5:
                 self.label_encoder(column)
             
@@ -16,10 +20,10 @@ class FeatTransform(Columns):
 
     def label_encoder(self, column):
         #Creating a unique dict for value counts
-        unique_dict = dict(self.value_count(column))
+        unique_dict = dict(self.value_counts(column))
         
         #Creating a total len for value counts
-        len_unique = len(self.value_count(column))
+        len_unique = len(self.value_counts(column))
         
         #Creating range upto len of unique values
         range_unique = range(len_unique)
@@ -30,7 +34,7 @@ class FeatTransform(Columns):
         for uniques, keys in zip(range_unique, unique_list):
             unique_dict[keys] = uniques
         
-        self.get(column) = self.map(column, unique_dict).astype(int)
+        self.data[column] = self.map(column, unique_dict).astype(int)
 
     def one_hot_encoder(self, column):
-        self.data() = self.get_dummies(column)
+        self.data = self.get_dummies(column)
