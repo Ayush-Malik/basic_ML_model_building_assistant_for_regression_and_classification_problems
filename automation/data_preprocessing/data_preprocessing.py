@@ -38,3 +38,20 @@ class FeatTransform(DataType):
 
     def one_hot_encoder(self, column):
         self.data = self.get_dummies(column)
+
+
+class Outliers(DataType):
+    def outliers(self):
+        for columns in self.num_col():
+            if self.unique_prcntg(columns) >= 20:
+                Q1 = self.Q1(columns)
+                Q3 = self.Q3(columns)
+                iqr = self.inter_quartile_range(columns)
+                Q1_value = (Q1 - 1.5*iqr)[0]
+                Q3_value = (Q3 + 1.5*iqr)[0]
+                
+                self.data[columns] = self.data[columns].apply(
+                    lambda x: Q3 if x > Q3_value else x)
+                
+                self.data[columns] = self.data[columns].apply(
+                    lambda x: Q1 if x < Q1_value else x)
