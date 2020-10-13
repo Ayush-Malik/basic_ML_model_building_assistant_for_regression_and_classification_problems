@@ -193,6 +193,8 @@ class Columns(Basic):
         else:
             # Data can be already divided into train and test datas.
             self.data = self.concat(*args, **dict(axis=0, ignore_index=True))
+        # original data then later on be accessed by this.
+        self.get_data = self.data.copy()
 
     @property
     def column_name(self):
