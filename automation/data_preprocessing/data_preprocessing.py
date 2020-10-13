@@ -46,12 +46,30 @@ class Outliers(DataType):
             if self.unique_prcntg(columns) >= 20:
                 Q1 = self.Q1(columns)
                 Q3 = self.Q3(columns)
-                iqr = self.inter_quartile_range(columns)
-                Q1_value = (Q1 - 1.5*iqr)[0]
-                Q3_value = (Q3 + 1.5*iqr)[0]
                 
-                self.data[columns] = self.data[columns].apply(
-                    lambda x: Q3 if x > Q3_value else x)
-                
-                self.data[columns] = self.data[columns].apply(
-                    lambda x: Q1 if x < Q1_value else x)
+                self.fix_outliers(
+                    value_1=Q1,
+                    value_3=Q3,
+                    threshold=1.5,
+                    column_name=columns
+                )
+
+    def fix_outliers(self, value_1, value_3, threshold, column_name):
+        if not isinstance(threshold, float):
+            try:
+                threshold = float(threshold)
+            except:
+                raise AttributeError("The type of threshold in not valid.")
+        if self.is_num(column_name):
+            Q1 = self.Q1(column_name)
+            Q3 = self.Q3(column_name)
+            iqr = self.inter_quartile_range(column_name)
+            Q1_value = (Q1 - threshold*iqr)[0]
+            Q3_value = (Q3 + threshold*iqr)[0]
+            
+            self.data[column_name] = self.get_col(column_name).apply(
+                lambda x: value_1 if x < Q1_value else x)
+            self.data[column_name] = self.get_col(column_name).apply(
+                lambda x: value_3 if x > Q3_value else x)
+        else:
+            raise AttributeError("The column is not of numeric type. Must pass column only of numeric type.")
