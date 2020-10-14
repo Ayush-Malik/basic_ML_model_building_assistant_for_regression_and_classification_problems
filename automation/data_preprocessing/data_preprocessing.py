@@ -3,6 +3,7 @@ import pandas as pd
 
 __all__ = [
     "FeatTransform",
+    "Outliers"
 ]
 # track target feature also.
 class FeatTransform(DataType):
@@ -60,16 +61,17 @@ class Outliers(DataType):
                 threshold = float(threshold)
             except:
                 raise AttributeError("The type of threshold in not valid.")
-        if self.is_num(column_name):
+        
+        if self.is_num([column_name]):
             Q1 = self.Q1(column_name)
             Q3 = self.Q3(column_name)
             iqr = self.inter_quartile_range(column_name)
-            Q1_value = (Q1 - threshold*iqr)[0]
-            Q3_value = (Q3 + threshold*iqr)[0]
+            lower_bound = (Q1 - threshold*iqr)[0]
+            upper_bound = (Q3 + threshold*iqr)[0]
             
             self.data[column_name] = self.get_col(column_name).apply(
-                lambda x: value_1 if x < Q1_value else x)
+                lambda x: value_1 if x < lower_bound else x)
             self.data[column_name] = self.get_col(column_name).apply(
-                lambda x: value_3 if x > Q3_value else x)
+                lambda x: value_3 if x > upper_bound else x)
         else:
             raise AttributeError("The column is not of numeric type. Must pass column only of numeric type.")

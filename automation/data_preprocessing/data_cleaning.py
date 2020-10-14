@@ -96,7 +96,7 @@ class Basic:
         ''' return the total length of the dataset'''
         return self.shape[0]
 
-    def isnull_sum_prcntg(self, column=None):
+    def isnull_sum_prcntg(self, column):
         ''' Return the percentage of sum of null values present in the dataset. '''
         if column:
             return round((self.isnull_sum(column) / self.data_len)*100, 2)
