@@ -64,31 +64,31 @@ class Basic:
         ''' Returns the shape of the dataset. '''
         return self.data.shape
 
-    def unique(self, column):
-        return self.get_col(column).unique()
+    def unique(self, column_name):
+        return self.get_col(column_name).unique()
 
-    def unique_prcntg(self, column):
-        return round((len(self.unique(column)) / self.data_len)*100, 2)
+    def unique_prcntg(self, column_name):
+        return round((len(self.unique(column_name)) / self.data_len)*100, 2)
 
-    def value_counts(self, column):
-        return self.get_col(column).value_counts()
+    def value_counts(self, column_name):
+        return self.get_col(column_name).value_counts()
 
-    def map(self, column, dict_obj):
-        return self.get_col(column).map(dict_obj)
+    def map(self, column_name, dict_obj):
+        return self.get_col(column_name).map(dict_obj)
 
-    def get_dummies(self, column):
+    def get_dummies(self, column_name):
         ''' limited version of pd.get_dummies... Only creates dummy variables for the column
         parameter passed. '''
-        return pd.get_dummies(self.data, columns=[column], drop_first=True)
+        return pd.get_dummies(self.data, columns=[column_name], drop_first=True)
 
     def isnull(self) -> DataFrame:
         ''' return the isnull value from dataframe '''
         return self.data.isnull()
 
-    def isnull_sum(self, column=None):
+    def isnull_sum(self, column_name=None):
         ''' return sum of null values present in the dataset. '''
-        if column:
-            return self.isnull().sum()[column]
+        if column_name:
+            return self.isnull().sum()[column_name]
         return self.isnull().sum()
 
     @property
@@ -96,10 +96,10 @@ class Basic:
         ''' return the total length of the dataset'''
         return self.shape[0]
 
-    def isnull_sum_prcntg(self, column):
+    def isnull_sum_prcntg(self, column_name):
         ''' Return the percentage of sum of null values present in the dataset. '''
-        if column:
-            return round((self.isnull_sum(column) / self.data_len)*100, 2)
+        if column_name:
+            return round((self.isnull_sum(column_name) / self.data_len)*100, 2)
         return round((self.isnull_sum / self.data_len)*100, 2)
 
     def drop(self, column, **kwargs):
@@ -201,9 +201,9 @@ class Columns(Basic):
         ''' returns name of all columns present in the dataset. '''
         return list(self.data.columns)
 
-    def get_col(self, column):
+    def get_col(self, column_name):
         ''' returns the values of specified column. '''
-        return self.data[column]
+        return self.data[column_name]
 
     def col_len(self):
         ''' return the total length of columns of the dataset '''
