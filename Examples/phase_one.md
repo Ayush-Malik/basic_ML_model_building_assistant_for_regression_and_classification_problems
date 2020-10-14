@@ -37,24 +37,24 @@ Getting the shape of the dataset object by using `shape` method.
 ... (891, 12)
 ```
 
-Getting the unique values present in the dataset by using `unique` method.
+Getting the unique values for any particular feature present in the dataset by using `unique` method.
 
 ```python
->>> df_obj.unique('Sex')
+>>> df_obj.unique(column_name = 'Sex')
 ... ['male' 'female']
 ```
 
-Getting the percentage of unique values count in the dataset by using `unique_prcntg` method.
+Getting the percentage of unique values count of any feature in the dataset by using `unique_prcntg` method.
 
 ```python
->>> df_obj.unique_prcntg('Sex')
+>>> df_obj.unique_prcntg(column_name = 'Sex')
 ... 0.22
 ```
 
 Getting value counts for a particular column of the dataset by using `value_counts` method.
 
 ```python
->>> df_obj.value_counts('Sex')
+>>> df_obj.value_counts(column_name = 'Sex')
 male      577
 female    314
 Name: Sex, dtype: int64
@@ -65,7 +65,8 @@ Mapping the values of any particular column according to the dict object is pass
 **NOTE:- It not map the values in actual dataframe instead it only returns the column with mapped values.**
 
 ```python
->>> new_col = df_obj.map('Sex', {'male': 1, 'female': 0})
+>>> new_col = df_obj.map(column_name = 'Sex', dict_obj = {'male': 1, 'female': 0})
+>>> new_col
 0      1
 1      0
 2      0
@@ -88,7 +89,7 @@ Getting the dummies using `get_dummies`.
 **NOTE:- It also does not induce any kind of impact on the main dataframe.**
 
 ```python
->>> df_obj.get_dummies('Ticket')
+>>> df_obj.get_dummies(column_name = 'Ticket')
      PassengerId  Survived  Pclass                                               Name  ... Ticket_W./C. 6609  Ticket_W.E.P. 5734  Ticket_W/C 14208  Ticket_WE/P 5735
 0              1         0       3                            Braund, Mr. Owen Harris  ...                 0                   0                 0                 0  
 1              2         1       1  Cumings, Mrs. John Bradley (Florence Briggs Th...  ...                 0                   0                 0                 0  
@@ -125,7 +126,7 @@ Getting the null values of the dataset by using `isnull` method.
 [891 rows x 12 columns]
 ```
 
-Getting the sum of isnull by using `isnull_sum` method.
+Getting the sum of isnull by using `isnull_sum` method. It can also give the results according to the column_name passed(default column_name is `None`).
 
 ```python
 >>> df_obj.isnull_sum()
@@ -142,12 +143,15 @@ Fare             0
 Cabin          687
 Embarked         2
 dtype: int64
+
+>>> df_obj.isnull_sum(column_name = 'Age')
+... 177
 ```
 
 Getting the total percentage of null values for a particular column by using `isnull_sum_prcntg` method.
 
 ```python
->>> df_obj.isnull_sum_prcntg('Cabin')
+>>> df_obj.isnull_sum_prcntg(column_name = 'Cabin')
 ... 77.1
 ```
 
@@ -174,20 +178,20 @@ Drop any particular column from the dataset by using `drop` method.
 Returns an appropriate value(mean, median, or mode) for any particular column according to parameter passed. This is done by using `central_tendency_finder` method.
 
 ```python
->>> df_obj.central_tendency_finder('Age', 'mean')
+>>> df_obj.central_tendency_finder(column_name = 'Age', measure = 'mean')
 ... 29.69911764705882
 
->>> df_obj.central_tendency_finder('Age', 'mode')
+>>> df_obj.central_tendency_finder(column_name = 'Age', measure = 'mode')
 ... 24.0
 
->>> df_obj.central_tendency_finder('Age', 'median')
+>>> df_obj.central_tendency_finder(column_name = 'Age', measure = 'median')
 ... 28.0
 ```
 
 Getting the inter quartile range for any particular feature by using `inter_quartile_range` method.
 
 ```python
->>> df_obj.inter_quartile_range('Age')
+>>> df_obj.inter_quartile_range(column_name = 'Age')
 0      0.0
 1      0.0
 2      0.0
@@ -205,21 +209,21 @@ Name: Age, Length: 891, dtype: float64
 Getting the Q1(first quartile) of any particular column from the dataset using `Q1` method.
 
 ```python
->>> df_obj.Q1('Age')
+>>> df_obj.Q1(column_name = 'Age')
 ... 20.125
 ```
 
 Getting the Q3(third quartile) of any particular column from the dataset using `Q3` method.
 
 ```python
->>> df_obj.Q3('Age')
+>>> df_obj.Q3(column_name = 'Age')
 ... 38.0
 ```
 
 Getting the minimum value of any particular column from the dataset using `col_minval` method.
 
 ```python
->>> df_obj.col_minval('Age')
+>>> df_obj.col_minval(column_name = 'Age')
 ... 0.42
 ```
 
@@ -233,7 +237,7 @@ Getting the column names as list type object from the dataset using `column_name
 Getting the column of the dataset by passing the column name. This is done under `get_col` method.
 
 ```python
->>> df_obj.get_col('Sex')
+>>> df_obj.get_col(column_name = 'Sex')
 0        male
 1      female
 2      female
@@ -283,18 +287,24 @@ Checking for a particular column that is it is of numerical type or not. This is
 ... True
 ```
 
-Getting column types along with their name by using `track_col` method.
+Getting column types along with their name by using `track_col` method. It also works perfectly fine when column names are passed and showing the result according to that case.
 
 ```python
 >>> df_obj.track_col()
 {'PassengerId': dtype('int64'), 'Survived': dtype('int64'), 'Pclass': dtype('int64'), 'Name': dtype('O'), 'Sex': dtype('O'), 'Age': dtype('float64'), 'SibSp': dtype('int64'), 'Parch': dtype('int64'), 'Ticket': dtype('O'), 'Fare': dtype('float64'), 'Embarked': dtype('O')}
+
+>>> df_obj.track_col(['Age', 'Embarked'])
+{'Age': dtype('float64'), 'Embarked': dtype('O')}
 ```
 
-Getting the categorical_feature and numerical_feature names as dict type object. This is done by `data_type` method.
+Getting the categorical_feature and numerical_feature names as dict type object. This is done by `data_type` method. Same is here if multiple column names are passed directly then it'll give the result according to that.
 
 ```python
 >>> df_obj.data_type()
 {'categorical_feature': ['Survived', 'Pclass', 'Name', 'Sex', 'Ticket', 'Embarked'], 'numerical_feature': ['PassengerId', 'Age', 'SibSp', 'Parch', 'Fare']}
+
+>>> df_obj.data_type(['Age', 'Embarked'])
+{'categorical_feature': ['Embarked'], 'numerical_feature': ['Age']}
 ```
 
 Using automatic process for treating null values. This is done by `auto_process` method.
@@ -329,12 +339,12 @@ Embarked       0
 dtype: int64
 ```
 
-Treating null values manually by using `manual_process` method.
+Treating null values manually by using `manual_process` method. Return type is `None`. it'll directly change into the main dataset.
 
 ```python
->>> df_obj.manual_process('Embarked', 'mode')      # Filling null values of 'Embarked' feature with its mode.
->>> df_obj.manual_process('Age', 'mean')           # Filling null values of 'Age' feature with its mean.
->>> df_obj.manual_process('Ticket', 'drop')        # Dropping Tickect column.
+>>> df_obj.manual_process(column_name = 'Embarked', parameter = 'mode')      # Filling null values of 'Embarked' feature with its mode.
+>>> df_obj.manual_process(column_name = 'Age', parameter = 'mean')           # Filling null values of 'Age' feature with its mean.
+>>> df_obj.manual_process(column_name = 'Ticket', parameter = 'drop')        # Dropping Tickect column.
 ```
 
 Removing the id column from the dataset by using `id_remover`method. Although it removes the id column from the dataframe but also it returns the id column that can be saved for later use.
@@ -368,7 +378,7 @@ Removing the id column from the dataset by using `id_remover`method. Although it
 Filling the null values for any particular column by the value passed as a parameter in `null_filler` method.
 
 ```python
->>> df_obj.null_filler('Embarked', 'S')
+>>> df_obj.null_filler(column_name = 'Embarked', value = 'S')
 ```
 
 Getting the original dataset (preserved without any changes.) by using `get_data`.
@@ -390,3 +400,7 @@ Getting the original dataset (preserved without any changes.) by using `get_data
 
 [891 rows x 12 columns]
 ```
+
+> Apart from this there is also a methods like `concat`--> To concat dataframes/ series, `dataframe` --> To create a dataframe.
+> Also if anyone add any kind of new method/class the test case for the same must be add in its respective test file.
+> If anyone changes any of the method then one should run all test cases via `python -m unittest <test_file_name>` before pushing.
