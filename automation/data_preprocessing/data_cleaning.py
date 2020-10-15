@@ -18,6 +18,26 @@ __all__ = [
     "DataCleaner",
 ]
 
+class Core:
+    def __init__(self, value, param) -> None:
+        self.v1 = value
+        self.param = param
+
+    def int_check(self):
+        if not isinstance(self.v1, int):
+            raise TypeError(
+                f'The \'{self.param}\' attribute can\'t be of {type(self.v1)} type. It can only have <int> type.')
+
+    def str_check(self):
+        if not isinstance(self.v1, str):
+            raise TypeError(
+                f'The \'{self.param}\' attribute can\'t be of {type(self.v1)} type. It can only have <str> type.')
+
+    def dict_check(self):
+        if not isinstance(self.v1, dict):
+            raise TypeError(
+                f'The \'{self.param}\' attribute can\'t be of {type(self.v1)} type. It can only have <dict> type.')
+
 class Basic:
     '''This is the base class of ml-automator that serves various impartant basic task 
     required in the automation for any ml use-case.
@@ -57,6 +77,7 @@ class Basic:
 
     def head(self, value=5):
         ''' Returns head of the dataset. '''
+        Core(value, 'value').int_check()
         return self.data.head(value)
 
     @property
@@ -74,11 +95,13 @@ class Basic:
         return self.get_col(column_name).value_counts()
 
     def map(self, column_name, dict_obj):
+        Core(dict_obj, 'dict_obj').dict_check()
         return self.get_col(column_name).map(dict_obj)
 
     def get_dummies(self, column_name):
         ''' limited version of pd.get_dummies... Only creates dummy variables for the column
         parameter passed. '''
+        Core(column_name, 'column_name').str_check()
         return pd.get_dummies(self.data, columns=[column_name], drop_first=True)
 
     def isnull(self) -> DataFrame:
@@ -88,7 +111,7 @@ class Basic:
     def isnull_sum(self, column_name=None):
         ''' return sum of null values present in the dataset. '''
         if column_name:
-            return self.isnull().sum()[column_name]
+            return self.get_col(column_name).isnull().sum()
         return self.isnull().sum()
 
     @property
@@ -105,6 +128,7 @@ class Basic:
     def drop(self, column, **kwargs):
         ''' Can be used to drop any particular feature from the dataset. '''
         if not isinstance(column, list):
+            Core(column, 'column').str_check()
             column = [column]
         return self.data.drop(column, **kwargs)
 
@@ -116,8 +140,10 @@ class Basic:
     def central_tendency_finder(self, column_name, measure):
         ''' return the measure(mean, median, mode) of selected column in the dataset
         according to the parameter(measure) is passed. '''
+        Core(measure, 'measure').str_check()
         measure = measure.lower()
         column = self.get_col(column_name)
+        
         if measure == "mode":
             return column.mode()[0]
         elif measure == "mean":
@@ -125,7 +151,7 @@ class Basic:
         elif measure == "median":
             return column.median()
         else:
-            raise AttributeError(f"Wrong attribute is passed; {measure} measure is not recognized")
+            raise AttributeError(f"Wrong attribute is passed; <{measure}> measure is not recognized")
 
     def inter_quartile_range(self, column_name):
         """
@@ -203,7 +229,11 @@ class Columns(Basic):
 
     def get_col(self, column_name):
         ''' returns the values of specified column. '''
-        return self.data[column_name]
+        Core(column_name, 'column_name').str_check()
+        try:
+            return self.data[column_name]
+        except:
+            raise KeyError(f"<{column_name}> is not present in the dataset.")
 
     def col_len(self):
         ''' return the total length of columns of the dataset '''
@@ -252,7 +282,7 @@ class Columns(Basic):
     def track_col(self):
         ''' Track all of the columns along with their datatypes;
         implemented in the child class. '''
-        pass
+        raise NotImplementedError()
 
 
 class DataType(Columns):
