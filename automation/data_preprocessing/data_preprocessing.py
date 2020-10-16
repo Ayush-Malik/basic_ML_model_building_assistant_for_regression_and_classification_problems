@@ -1,3 +1,4 @@
+from sklearn.utils import shuffle
 from automation import DataType
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -79,14 +80,29 @@ class Outliers(DataType):
 
 
 class DataSplitter(DataType):
-    def data_splitter(self):
-        pass
+    def data_splitter(self, test_size=0.33):
+        if self.data_num > 1:
+            train_data_len = self.data_len_list[0]
+            train_data = self.data.iloc[: train_data_len, :]
+            test_data = self.data.iloc[train_data_len: , :]
+            
+            X_train= train_data.drop(self.target_feat, axis=1)
+            X_test = test_data.drop(self.target_feat, axis=1)
+            y_train = train_data[self.target_feat]
+            y_test = test_data[self.target_feat]
+            return (X_train, X_test, y_train, y_test)
+        
+        return self.train_test_splitter(test_size=test_size)
 
-    def train_test_splitter(self, test_size=0.33):
+    def train_test_splitter(self, test_size):
+        shuffle = True
+        if self.is_date_type:
+            shuffle = False
+        
         X = self.drop(self.target_feat, axis=1)
         y = self.get_col(self.target_feat)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=42)
+            X, y, test_size=test_size, shuffle=shuffle, random_state=42)
         
         return (X_train, X_test, y_train, y_test)
 
