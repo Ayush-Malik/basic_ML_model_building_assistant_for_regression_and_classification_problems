@@ -1,5 +1,6 @@
 from automation import DataType
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 __all__ = [
     "FeatTransform",
@@ -75,3 +76,20 @@ class Outliers(DataType):
                 lambda x: value_3 if x > upper_bound else x)
         else:
             raise AttributeError("The column is not of numeric type. Must pass column only of numeric type.")
+
+
+class DataSplitter(DataType):
+    def data_splitter(self):
+        pass
+
+    def train_test_splitter(self, test_size=0.33):
+        X = self.drop(self.target_feat, axis=1)
+        y = self.get_col(self.target_feat)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42)
+        
+        return (X_train, X_test, y_train, y_test)
+
+
+class ImbalancedDataset(DataType):
+    pass
