@@ -7,7 +7,6 @@
         to deal with them "
 '''
 import pandas as pd
-import numpy as np
 from pandas.core.frame import DataFrame
 import scipy.stats as stats
 
@@ -212,15 +211,24 @@ class Columns(Basic):
     >>> df.track_col()    # ------- this method is used by child class to overwrite.
     '''
 
-    def __init__(self, *args):
+    def __init__(self, target_feat, *args):
         ''' Used to take dataframe objects. '''
-        if len(args) == 1:
+        self.data_num = len(args)
+        self.data_len_list = [i.shape[0] for i in args]
+        
+        if self.data_num == 1:
             self.data = args[0]
-        else:
+        elif self.data_num == 2:
             # Data can be already divided into train and test datas.
+            l1, l2 = self.data_len_list
+            if l2 > l1:
+                raise AttributeError("Found inorder in the datas passed. Must pass train data before the test data.")
             self.data = self.concat(*args, **dict(axis=0, ignore_index=True))
+        else:
+            raise NotImplementedError('Did not work on more then two datasets.')
         # original data then later on be accessed by this.
         self.get_data = self.data.copy()
+        self.target_feat = target_feat
 
     @property
     def column_name(self):
@@ -415,9 +423,3 @@ class DataCleaner(DataType):
     def null_filler(self, column_name, value) -> None:
         ''' Fill the null values of the feature with the attribute(value) passed '''
         self.data[column_name] = self.get_col(column_name).fillna(value)
-
-
-# must save the original data
-# concat option---> done..
-# column_name option ---> done..
-# datatype_tracker ---> done..
